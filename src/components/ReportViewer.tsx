@@ -179,54 +179,23 @@ export function ReportViewer({ report, onBack }: ReportViewerProps) {
     setVisibleCharts(prev => new Set([...prev, chartId]));
   };
 
-  // Replace chart placeholders with actual charts
-  useEffect(() => {
-    visibleCharts.forEach(chartId => {
-      const placeholder = document.getElementById(`${chartId}-chart`);
-      if (placeholder && !placeholder.dataset.rendered) {
-        placeholder.dataset.rendered = 'true';
-        placeholder.innerHTML = '';
-        placeholder.className = 'chart-rendered';
-        
-        // Find the chart config
-        const chart = report.charts.find(c => c.id === chartId);
-        if (chart) {
-          // Create a React component container
-          const chartContainer = document.createElement('div');
-          placeholder.appendChild(chartContainer);
-          
-          // We'll render the chart using a simpler method
-          placeholder.innerHTML = `
-            <div style="
-              background: var(--card);
-              border: 1px solid var(--border);
-              border-radius: 0.5rem;
-              padding: 1.5rem;
-              text-align: center;
-              min-height: 300px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              flex-direction: column;
-            ">
-              <div style="
-                background: var(--primary);
-                color: var(--primary-foreground);
-                padding: 1rem;
-                border-radius: 0.25rem;
-                margin-bottom: 1rem;
-              ">
-                📊 Grafiek: ${chartId}
-              </div>
-              <p style="color: var(--muted-foreground); margin: 0;">
-                Grafiek wordt geladen met configuratie: ${chart.configPath}
-              </p>
-            </div>
-          `;
-        }
-      }
-    });
-  }, [visibleCharts, report.charts]);
+  // Get rendered charts for visible chart IDs
+  const getRenderedCharts = () => {
+    return Array.from(visibleCharts).map(chartId => {
+      const chart = report.charts.find(c => c.id === chartId);
+      if (!chart) return null;
+      
+      return (
+        <ChartRenderer
+          key={chartId}
+          configPath={chart.configPath}
+          width={800}
+          height={400}
+          className="chart-rendered"
+        />
+      );
+    }).filter(Boolean);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -282,11 +251,171 @@ export function ReportViewer({ report, onBack }: ReportViewerProps) {
 
       {/* Scrollytelling Content */}
       <div className="scrolly-article">
-        <Scrollytelling 
-          htmlContent={htmlContent}
-          onChartVisible={handleChartVisible}
-        />
+        {report.id === 'q3-2024-analytics' ? (
+          <Q3AnalyticsScrollyContent report={report} />
+        ) : (
+          <DefaultScrollyContent report={report} />
+        )}
       </div>
+    </div>
+  );
+}
+
+// React-based scrollytelling components
+function Q3AnalyticsScrollyContent({ report }: { report: Report }) {
+  return (
+    <div className="scrolly-report">
+      <section id="introduction" className="scrolly-section text-section">
+        <div className="container">
+          <h1>Q3 2024 Website Analytics Rapport</h1>
+          <p className="lead">
+            Onze Q3 2024 analytics tonen significante groei in alle belangrijke prestatie-indicatoren. 
+            Websiteverkeer steeg met <strong>37%</strong> vergeleken met Q2, met bijzonder sterke 
+            prestaties in organische zoekzichtbaarheid.
+          </p>
+          <div className="highlight-box">
+            <h3>Samenvatting van Resultaten</h3>
+            <ul className="key-metrics">
+              <li><span className="metric">37%</span> toename in websiteverkeer</li>
+              <li><span className="metric">21,180</span> unieke bezoekers in september</li>
+              <li><span className="metric">45%</span> van verkeer via organisch zoeken</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="traffic-growth" className="scrolly-section chart-section">
+        <div className="container">
+          <div className="section-header">
+            <h2>Verkeersgroei Doorheen Q3</h2>
+            <p>
+              Het derde kwartaal toonde uitzonderlijke groei in unieke bezoekers, waarbij 
+              september ons hoogste maandelijkse verkeer tot nu toe markeerde.
+            </p>
+          </div>
+          
+          <div className="scrolly-chart-container">
+            <ChartRenderer
+              configPath="/src/rapporten/q3-2024-analytics/monthly-visitors.config.json"
+              width={800}
+              height={400}
+            />
+          </div>
+          
+          <div className="analysis-text">
+            <h3>Groei Acceleratie</h3>
+            <p>
+              De maandelijkse groei toont een versnelling vanaf augustus, met een 
+              opmerkelijke sprong van <strong>18,350</strong> naar <strong>21,180</strong> 
+              unieke bezoekers tussen augustus en september.
+            </p>
+            
+            <h4>Deze groei kan worden toegeschreven aan:</h4>
+            <ul>
+              <li>Verbeterde SEO-strategie implementatie</li>
+              <li>Verbeterde contentmarketing-inspanningen</li>
+              <li>Strategische social media campagnes</li>
+              <li>Geoptimaliseerde gebruikerservaring op mobiele apparaten</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-performance" className="scrolly-section chart-text-section">
+        <div className="container">
+          <div className="section-header">
+            <h2>Pagina Prestatie Analyse</h2>
+            <p>Welke pagina's trekken de meeste aandacht van onze bezoekers?</p>
+          </div>
+          
+          <ChartRenderer
+            configPath="/src/rapporten/q3-2024-analytics/page-performance.config.json"
+            width={800}
+            height={400}
+          />
+          
+          <div className="analysis-text">
+            <h3>Homepage Dominantie</h3>
+            <p>
+              Onze homepage blijft veruit de meest bezochte pagina met <strong>8,450 weergaven</strong>, 
+              wat de effectiviteit van onze landingspagina optimalisaties bevestigt.
+            </p>
+            
+            <h4>Belangrijke Bevindingen:</h4>
+            <ul>
+              <li><strong>Productcatalogus</strong> (6,200 weergaven) - Sterke commerciële interesse</li>
+              <li><strong>Blog</strong> (3,600 weergaven) - Content marketing succes</li>
+              <li><strong>Over Ons</strong> (4,100 weergaven) - Merkvertrouwen opbouw</li>
+              <li><strong>Contact</strong> (2,800 weergaven) - Goede lead generatie basis</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="recommendations" className="scrolly-section text-section">
+        <div className="container">
+          <h2>Aanbevelingen voor Q4</h2>
+          
+          <div className="recommendations-list">
+            <div className="recommendation">
+              <div className="rec-number">1</div>
+              <div className="rec-content">
+                <h4>Inzetten op contentmarketing</h4>
+                <p>Blogposts genereren significant organisch verkeer en moeten uitgebreid worden</p>
+              </div>
+            </div>
+            
+            <div className="recommendation">
+              <div className="rec-number">2</div>
+              <div className="rec-content">
+                <h4>Mobiele ervaring optimaliseren</h4>
+                <p>68% van het verkeer is nu mobiel - prioriteit voor UX verbeteringen</p>
+              </div>
+            </div>
+            
+            <div className="recommendation">
+              <div className="rec-number">3</div>
+              <div className="rec-content">
+                <h4>Social media aanwezigheid uitbreiden</h4>
+                <p>Vooral op platforms met hoogste betrokkenheid investeren</p>
+              </div>
+            </div>
+            
+            <div className="recommendation">
+              <div className="rec-number">4</div>
+              <div className="rec-content">
+                <h4>A/B test checkout proces</h4>
+                <p>Om conversiepercentages verder te verbeteren en weerstand weg te nemen</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function DefaultScrollyContent({ report }: { report: Report }) {
+  return (
+    <div className="scrolly-report">
+      <section className="scrolly-section text-section">
+        <div className="container">
+          <h1>{report.title}</h1>
+          <p className="lead">{report.description}</p>
+          
+          <div className="charts-section">
+            {report.charts.map(chart => (
+              <div key={chart.id} className="chart-container" style={{ margin: '3rem 0' }}>
+                <ChartRenderer
+                  configPath={chart.configPath}
+                  width={800}
+                  height={400}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

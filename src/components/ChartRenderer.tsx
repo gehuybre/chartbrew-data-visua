@@ -25,19 +25,29 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     loadChart();
   }, [configPath]);
 
+  useEffect(() => {
+    if (config && data.length > 0) {
+      renderChart(config, data);
+    }
+  }, [config, data, width, height]);
+
   const loadChart = async () => {
     try {
+      console.log('Loading chart config from:', configPath);
       setIsLoading(true);
       setError(null);
       
       const chartConfig = await loadChartConfig(configPath);
+      console.log('Loaded chart config:', chartConfig);
       setConfig(chartConfig);
       
       const csvData = await loadCSVData(chartConfig.dataSource);
+      console.log('Loaded CSV data:', csvData);
       setData(csvData);
       
       renderChart(chartConfig, csvData);
     } catch (err) {
+      console.error('Error loading chart:', err);
       setError(err instanceof Error ? err.message : 'Failed to load chart');
     } finally {
       setIsLoading(false);
@@ -46,6 +56,8 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
   const renderChart = (config: ChartConfig, data: any[]) => {
     if (!svgRef.current) return;
+    
+    console.log('Rendering chart:', config.id, 'with data:', data);
 
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
@@ -60,44 +72,64 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     // Get colors based on palette
     const colors = getChartColors(config.colors);
 
-    switch (config.type) {
-      case 'line':
-        renderLineChart(g, data, config, chartWidth, chartHeight, colors);
-        break;
-      case 'bar':
-        renderBarChart(g, data, config, chartWidth, chartHeight, colors);
-        break;
-      case 'pie':
-        renderPieChart(g, data, config, chartWidth, chartHeight, colors);
-        break;
-      case 'area':
-        renderAreaChart(g, data, config, chartWidth, chartHeight, colors);
-        break;
-      default:
-        console.warn(`Chart type ${config.type} not implemented yet`);
-    }
+    try {
+      switch (config.type) {
+        case 'line':
+          renderLineChart(g, data, config, chartWidth, chartHeight, colors);
+          break;
+        case 'bar':
+          renderBarChart(g, data, config, chartWidth, chartHeight, colors);
+          break;
+        case 'pie':
+          renderPieChart(g, data, config, chartWidth, chartHeight, colors);
+          break;
+        case 'area':
+          renderAreaChart(g, data, config, chartWidth, chartHeight, colors);
+          break;
+        default:
+          console.warn(`Chart type ${config.type} not implemented yet`);
+          // Add a fallback message
+          g.append('text')
+            .attr('x', chartWidth / 2)
+            .attr('y', chartHeight / 2)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '16px')
+            .style('fill', 'var(--muted-foreground)')
+            .text(`Chart type "${config.type}" wordt nog niet ondersteund`);
+      }
 
-    // Add title
-    if (config.title) {
-      svg.append('text')
-        .attr('x', width / 2)
-        .attr('y', 25)
-        .attr('text-anchor', 'middle')
-        .style('font-size', '18px')
-        .style('font-weight', '600')
-        .style('fill', 'var(--foreground)')
-        .text(config.title);
-    }
+      // Add title
+      if (config.title) {
+        svg.append('text')
+          .attr('x', width / 2)
+          .attr('y', 25)
+          .attr('text-anchor', 'middle')
+          .style('font-size', '18px')
+          .style('font-weight', '600')
+          .style('fill', 'var(--foreground)')
+          .text(config.title);
+      }
 
-    // Add subtitle
-    if (config.subtitle) {
-      svg.append('text')
-        .attr('x', width / 2)
-        .attr('y', 45)
+      // Add subtitle
+      if (config.subtitle) {
+        svg.append('text')
+          .attr('x', width / 2)
+          .attr('y', 45)
+          .attr('text-anchor', 'middle')
+          .style('font-size', '14px')
+          .style('fill', 'var(--muted-foreground)')
+          .text(config.subtitle);
+      }
+    } catch (error) {
+      console.error('Error rendering chart:', error);
+      // Show error in chart
+      g.append('text')
+        .attr('x', chartWidth / 2)
+        .attr('y', chartHeight / 2)
         .attr('text-anchor', 'middle')
-        .style('font-size', '14px')
-        .style('fill', 'var(--muted-foreground)')
-        .text(config.subtitle);
+        .style('font-size', '16px')
+        .style('fill', 'var(--destructive)')
+        .text('Fout bij renderen van grafiek');
     }
   };
 
@@ -113,45 +145,82 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
   };
 
   const renderLineChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
-    if (!config.xAxis || !config.yAxis) return;
+    if (!config.xAxis || !config.yAxis) {
+      console.error('Missing axis configuration for line chart');
+      return;
+    }
+
+    console.log('Rendering line chart with:', { data, xField: config.xAxis.field, yField: config.yAxis.field });
 
     const xScale = d3.scaleBand()
-      .domain(data.map(d => d[config.xAxis!.field]))
+      .domain(data.map(d => String(d[config.xAxis!.field])))
       .range([0, width])
       .padding(0.1);
 
+    const yExtent = d3.extent(data, d => Number(d[config.yAxis!.field])) as [number, number];
     const yScale = d3.scaleLinear()
-      .domain(d3.extent(data, d => d[config.yAxis!.field]) as [number, number])
+      .domain(yExtent)
       .nice()
       .range([height, 0]);
 
-    // Add axes
+    // Add grid if enabled
     if (config.grid?.show) {
       g.append('g')
         .attr('class', 'grid')
         .attr('transform', `translate(0,${height})`)
         .call(d3.axisBottom(xScale).tickSize(-height).tickFormat(''))
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
-        .style('stroke', config.grid.color || 'var(--border)');
+        .style('stroke', config.grid.color || 'var(--border)')
+        .style('opacity', 0.3);
 
       g.append('g')
         .attr('class', 'grid')
         .call(d3.axisLeft(yScale).tickSize(-width).tickFormat(''))
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
-        .style('stroke', config.grid.color || 'var(--border)');
+        .style('stroke', config.grid.color || 'var(--border)')
+        .style('opacity', 0.3);
     }
 
+    // Add axes
     g.append('g')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(xScale));
+      .call(d3.axisBottom(xScale))
+      .selectAll('text')
+      .style('font-size', '12px')
+      .style('fill', 'var(--foreground)');
 
     g.append('g')
-      .call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')));
+      .call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')))
+      .selectAll('text')
+      .style('font-size', '12px')
+      .style('fill', 'var(--foreground)');
+
+    // Add axis labels
+    if (config.xAxis.label) {
+      g.append('text')
+        .attr('x', width / 2)
+        .attr('y', height + 40)
+        .style('text-anchor', 'middle')
+        .style('font-size', '14px')
+        .style('fill', 'var(--foreground)')
+        .text(config.xAxis.label);
+    }
+
+    if (config.yAxis.label) {
+      g.append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', -40)
+        .attr('x', -height / 2)
+        .style('text-anchor', 'middle')
+        .style('font-size', '14px')
+        .style('fill', 'var(--foreground)')
+        .text(config.yAxis.label);
+    }
 
     // Add line
     const line = d3.line<any>()
-      .x(d => xScale(d[config.xAxis!.field])! + xScale.bandwidth() / 2)
-      .y(d => yScale(d[config.yAxis!.field]));
+      .x(d => xScale(String(d[config.xAxis!.field]))! + xScale.bandwidth() / 2)
+      .y(d => yScale(Number(d[config.yAxis!.field])));
 
     if (config.lines?.smooth) {
       line.curve(d3.curveCardinal);
@@ -170,24 +239,55 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .data(data)
       .enter().append('circle')
       .attr('class', 'dot')
-      .attr('cx', (d: any) => xScale(d[config.xAxis!.field])! + xScale.bandwidth() / 2)
-      .attr('cy', (d: any) => yScale(d[config.yAxis!.field]))
+      .attr('cx', (d: any) => xScale(String(d[config.xAxis!.field]))! + xScale.bandwidth() / 2)
+      .attr('cy', (d: any) => yScale(Number(d[config.yAxis!.field])))
       .attr('r', 4)
-      .attr('fill', colors[0]);
+      .attr('fill', colors[0])
+      .style('opacity', 0.8)
+      .on('mouseover', function(event, d) {
+        d3.select(this).attr('r', 6).style('opacity', 1);
+      })
+      .on('mouseout', function(event, d) {
+        d3.select(this).attr('r', 4).style('opacity', 0.8);
+      });
   };
 
   const renderBarChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
-    if (!config.xAxis || !config.yAxis) return;
+    if (!config.xAxis || !config.yAxis) {
+      console.error('Missing axis configuration for bar chart');
+      return;
+    }
+
+    console.log('Rendering bar chart with:', { data, xField: config.xAxis.field, yField: config.yAxis.field });
 
     const xScale = d3.scaleBand()
-      .domain(data.map(d => d[config.xAxis!.field]))
+      .domain(data.map(d => String(d[config.xAxis!.field])))
       .range([0, width])
       .padding(config.bar?.spacing || 0.1);
 
+    const yMax = d3.max(data, d => Number(d[config.yAxis!.field])) || 0;
     const yScale = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d[config.yAxis!.field]) as number])
+      .domain([0, yMax])
       .nice()
       .range([height, 0]);
+
+    // Add grid if enabled
+    if (config.grid?.show) {
+      g.append('g')
+        .attr('class', 'grid')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(xScale).tickSize(-height).tickFormat(''))
+        .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
+        .style('stroke', config.grid.color || 'var(--border)')
+        .style('opacity', 0.3);
+
+      g.append('g')
+        .attr('class', 'grid')
+        .call(d3.axisLeft(yScale).tickSize(-width).tickFormat(''))
+        .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
+        .style('stroke', config.grid.color || 'var(--border)')
+        .style('opacity', 0.3);
+    }
 
     // Add axes
     g.append('g')
@@ -195,33 +295,76 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .call(d3.axisBottom(xScale))
       .selectAll('text')
       .style('text-anchor', 'end')
+      .style('font-size', '12px')
+      .style('fill', 'var(--foreground)')
       .attr('dx', '-.8em')
       .attr('dy', '.15em')
-      .attr('transform', `rotate(${config.xAxis.rotation || 0})`);
+      .attr('transform', `rotate(${config.xAxis.rotation || -45})`);
 
     g.append('g')
-      .call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')));
+      .call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')))
+      .selectAll('text')
+      .style('font-size', '12px')
+      .style('fill', 'var(--foreground)');
+
+    // Add axis labels
+    if (config.xAxis.label) {
+      g.append('text')
+        .attr('x', width / 2)
+        .attr('y', height + 50)
+        .style('text-anchor', 'middle')
+        .style('font-size', '14px')
+        .style('fill', 'var(--foreground)')
+        .text(config.xAxis.label);
+    }
+
+    if (config.yAxis.label) {
+      g.append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', -40)
+        .attr('x', -height / 2)
+        .style('text-anchor', 'middle')
+        .style('font-size', '14px')
+        .style('fill', 'var(--foreground)')
+        .text(config.yAxis.label);
+    }
 
     // Add bars
     g.selectAll('.bar')
       .data(data)
       .enter().append('rect')
       .attr('class', 'bar')
-      .attr('x', (d: any) => xScale(d[config.xAxis!.field])!)
+      .attr('x', (d: any) => xScale(String(d[config.xAxis!.field]))!)
       .attr('width', xScale.bandwidth())
-      .attr('y', (d: any) => yScale(d[config.yAxis!.field]))
-      .attr('height', (d: any) => height - yScale(d[config.yAxis!.field]))
+      .attr('y', (d: any) => yScale(Number(d[config.yAxis!.field])))
+      .attr('height', (d: any) => height - yScale(Number(d[config.yAxis!.field])))
       .attr('fill', colors[0])
-      .attr('rx', config.bar?.borderRadius || 0);
+      .attr('rx', config.bar?.borderRadius || 0)
+      .style('opacity', 0.8)
+      .on('mouseover', function(event, d) {
+        d3.select(this).style('opacity', 1);
+      })
+      .on('mouseout', function(event, d) {
+        d3.select(this).style('opacity', 0.8);
+      });
   };
 
   const renderPieChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
-    const radius = Math.min(width, height) / 2;
+    console.log('Rendering pie chart with data:', data);
+    
+    const radius = Math.min(width, height) / 2 - 20; // Leave some margin
     const centerX = width / 2;
     const centerY = height / 2;
 
+    // For pie charts, we expect data with 'label' and 'value' fields, or use the first two fields
+    const keys = Object.keys(data[0] || {});
+    const labelField = keys[0];
+    const valueField = keys[1];
+
+    console.log('Using fields:', { labelField, valueField });
+
     const pie = d3.pie<any>()
-      .value(d => d[Object.keys(d)[1]]) // Use second column as value
+      .value(d => Number(d[valueField]))
       .sort(config.pie?.sortByValue ? null : d3.ascending);
 
     const arc = d3.arc<any>()
@@ -241,15 +384,53 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
     slices.append('path')
       .attr('d', arc)
-      .attr('fill', (_: any, i: number) => colors[i % colors.length]);
+      .attr('fill', (_: any, i: number) => colors[i % colors.length])
+      .style('opacity', 0.9)
+      .on('mouseover', function(event, d) {
+        d3.select(this).style('opacity', 1);
+      })
+      .on('mouseout', function(event, d) {
+        d3.select(this).style('opacity', 0.9);
+      });
 
     // Add labels
     slices.append('text')
       .attr('transform', (d: any) => `translate(${arc.centroid(d)})`)
       .attr('text-anchor', 'middle')
       .style('font-size', '12px')
+      .style('font-weight', '500')
       .style('fill', 'white')
-      .text((d: any) => d.data[Object.keys(d.data)[0]]);
+      .style('text-shadow', '0 1px 2px rgba(0,0,0,0.6)')
+      .text((d: any) => {
+        const percentage = ((d.data[valueField] / d3.sum(data, d => d[valueField])) * 100).toFixed(1);
+        return percentage > 5 ? `${percentage}%` : ''; // Only show label if slice is big enough
+      });
+
+    // Add legend if enabled
+    if (config.legend?.show && config.legend.position === 'right') {
+      const legend = g.append('g')
+        .attr('class', 'legend')
+        .attr('transform', `translate(${radius + 30}, ${-radius})`);
+
+      const legendItems = legend.selectAll('.legend-item')
+        .data(pieData)
+        .enter().append('g')
+        .attr('class', 'legend-item')
+        .attr('transform', (d, i) => `translate(0, ${i * 25})`);
+
+      legendItems.append('rect')
+        .attr('width', 18)
+        .attr('height', 18)
+        .attr('fill', (d, i) => colors[i % colors.length]);
+
+      legendItems.append('text')
+        .attr('x', 24)
+        .attr('y', 9)
+        .attr('dy', '0.35em')
+        .style('font-size', '12px')
+        .style('fill', 'var(--foreground)')
+        .text((d: any) => d.data[labelField]);
+    }
   };
 
   const renderAreaChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
@@ -345,7 +526,8 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
           ref={svgRef}
           width={width}
           height={height}
-          className="w-full h-auto"
+          className="w-full h-auto max-w-full"
+          style={{ display: 'block' }}
         />
         
         {config?.footer && (

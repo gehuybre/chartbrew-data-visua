@@ -42,6 +42,100 @@ export async function loadChartConfig(configPath: string): Promise<ChartConfig> 
           notes: ['Unieke bezoekers gedefinieerd als gebruikers met unieke cookie IDs']
         },
         animation: { duration: 1500, easing: 'ease-out', delay: 200 }
+      },
+      '/src/rapporten/user-satisfaction-2024/satisfaction-scores.config.json': {
+        id: 'satisfaction-scores',
+        type: 'bar',
+        title: 'Klanttevredenheidsscore per Categorie',
+        subtitle: 'Gemiddelde scores op 5-punts schaal',
+        dataSource: '/src/rapporten/user-satisfaction-2024/satisfaction-scores.csv',
+        xAxis: { field: 'category', label: 'Categorie', type: 'category' },
+        yAxis: { field: 'score', label: 'Tevredenheidsscore', type: 'linear', format: '.1f' },
+        colors: { palette: 'default' },
+        bar: { spacing: 0.2, borderRadius: 4 },
+        legend: { show: false, position: 'top' },
+        grid: { show: true, color: 'var(--border)', style: 'solid' },
+        tooltip: { show: true, format: '{category}: {score:.1f}/5.0' },
+        footer: {
+          text: 'Gebaseerd op 1,247 antwoorden',
+          source: 'Customer Success Team',
+          notes: ['Score berekend als gemiddelde van alle antwoorden per categorie']
+        },
+        animation: { duration: 1200, easing: 'ease-out', delay: 100 }
+      },
+      '/src/rapporten/user-satisfaction-2024/nps-trend.config.json': {
+        id: 'nps-trend',
+        type: 'line',
+        title: 'Net Promoter Score Trend',
+        subtitle: 'Maandelijkse NPS ontwikkeling',
+        dataSource: '/src/rapporten/user-satisfaction-2024/nps-trend.csv',
+        xAxis: { field: 'month', label: 'Maand', type: 'category' },
+        yAxis: { field: 'nps', label: 'NPS Score', type: 'linear', format: '+#;-#' },
+        colors: { palette: 'highlight' },
+        lines: { style: 'solid', width: 3, smooth: true, projection: { enabled: false } },
+        legend: { show: false, position: 'top' },
+        grid: { show: true, color: 'var(--border)', style: 'solid' },
+        tooltip: { show: true, format: '{month}: NPS {nps:+#}' },
+        footer: {
+          text: 'NPS berekend volgens standaard methodologie',
+          source: 'Customer Success Team',
+          notes: ['Scores boven +50 worden als excellent beschouwd']
+        },
+        animation: { duration: 1500, easing: 'ease-out', delay: 200 }
+      },
+      '/src/rapporten/user-satisfaction-2024/response-distribution.config.json': {
+        id: 'response-distribution',
+        type: 'pie',
+        title: 'Verdeling Respondenten',
+        subtitle: 'Klantensegmenten in onderzoek',
+        dataSource: '/src/rapporten/user-satisfaction-2024/response-distribution.csv',
+        colors: { palette: 'default' },
+        pie: { innerRadius: 0.3, sortByValue: true, padAngle: 0.02, cornerRadius: 3 },
+        legend: { show: true, position: 'right' },
+        tooltip: { show: true, format: '{segment}: {count} respondenten ({percentage:.1f}%)' },
+        footer: {
+          text: 'Totaal 1,247 geldige antwoorden',
+          source: 'Customer Success Team',
+          notes: ['Segmentatie gebaseerd op klantstatus en contractgrootte']
+        },
+        animation: { duration: 1000, easing: 'ease-out', delay: 150 }
+      },
+      '/src/rapporten/q3-2024-analytics/traffic-sources.config.json': {
+        id: 'traffic-sources',
+        type: 'pie',
+        title: 'Verkeersbronnen Verdeling',
+        subtitle: 'Waar komen onze bezoekers vandaan?',
+        dataSource: '/src/rapporten/q3-2024-analytics/traffic-sources.csv',
+        colors: { palette: 'default' },
+        pie: { innerRadius: 0.4, sortByValue: true, padAngle: 0.01, cornerRadius: 2 },
+        legend: { show: true, position: 'right' },
+        tooltip: { show: true, format: '{source}: {percentage}% van verkeer' },
+        footer: {
+          text: 'Data verzameld via Google Analytics',
+          source: 'Analytics Team',
+          notes: ['Gebaseerd op laatste klik attributie model']
+        },
+        animation: { duration: 1200, easing: 'ease-out', delay: 100 }
+      },
+      '/src/rapporten/q3-2024-analytics/page-performance.config.json': {
+        id: 'page-performance',
+        type: 'bar',
+        title: 'Top Pagina Prestaties',
+        subtitle: 'Paginaweergaven per sectie',
+        dataSource: '/src/rapporten/q3-2024-analytics/page-performance.csv',
+        xAxis: { field: 'page', label: 'Pagina', type: 'category' },
+        yAxis: { field: 'views', label: 'Weergaven', type: 'linear', format: '#,###' },
+        colors: { palette: 'default' },
+        bar: { spacing: 0.3, borderRadius: 6 },
+        legend: { show: false, position: 'top' },
+        grid: { show: true, color: 'var(--border)', style: 'solid' },
+        tooltip: { show: true, format: '{page}: {views:#,###} weergaven' },
+        footer: {
+          text: 'Data verzameld via Google Analytics',
+          source: 'Analytics Team',
+          notes: ['Alleen unieke paginaweergaven geteld']
+        },
+        animation: { duration: 1000, easing: 'ease-out', delay: 300 }
       }
     };
     
@@ -82,6 +176,30 @@ export async function loadCSVData(csvPath: string): Promise<any[]> {
         { page: 'Over Ons', views: 4100 },
         { page: 'Contact', views: 2800 },
         { page: 'Blog', views: 3600 }
+      ],
+      '/src/rapporten/user-satisfaction-2024/satisfaction-scores.csv': [
+        { category: 'Productkwaliteit', score: 4.2 },
+        { category: 'Klantenservice', score: 4.5 },
+        { category: 'Gebruiksgemak', score: 3.8 },
+        { category: 'Prijs-kwaliteit', score: 3.6 },
+        { category: 'Algehele ervaring', score: 4.1 }
+      ],
+      '/src/rapporten/user-satisfaction-2024/nps-trend.csv': [
+        { month: 'Januari', nps: 42 },
+        { month: 'Februari', nps: 45 },
+        { month: 'Maart', nps: 38 },
+        { month: 'April', nps: 51 },
+        { month: 'Mei', nps: 48 },
+        { month: 'Juni', nps: 55 },
+        { month: 'Juli', nps: 52 },
+        { month: 'Augustus', nps: 58 },
+        { month: 'September', nps: 56 }
+      ],
+      '/src/rapporten/user-satisfaction-2024/response-distribution.csv': [
+        { segment: 'Enterprise Klanten', count: 387, percentage: 31.0 },
+        { segment: 'Mid-market', count: 456, percentage: 36.6 },
+        { segment: 'Small Business', count: 248, percentage: 19.9 },
+        { segment: 'Nieuwe Klanten', count: 156, percentage: 12.5 }
       ]
     };
     
