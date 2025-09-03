@@ -67,7 +67,7 @@ export function SearchBar({ reports, onFilteredReports }: SearchBarProps) {
       <div className="relative">
         <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
         <Input
-          placeholder="Search reports by title, content, or author..."
+          placeholder="Zoek rapporten op titel, inhoud of auteur..."
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
           className="pl-10 h-12 font-inter"
@@ -93,7 +93,7 @@ export function SearchBar({ reports, onFilteredReports }: SearchBarProps) {
             className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors ml-2"
           >
             <X size={14} />
-            Clear filters
+            Filters wissen
           </button>
         )}
       </div>

@@ -3,6 +3,7 @@ export interface ChartData {
   type: 'bar' | 'line' | 'pie' | 'area';
   title: string;
   data: any[];
+  csvPath?: string; // Path to CSV file for this chart
   config?: {
     xAxis?: string;
     yAxis?: string;
@@ -20,6 +21,7 @@ export interface Report {
   charts: ChartData[];
   content: string; // Markdown content
   thumbnail?: string;
+  folderPath?: string; // Path to report folder containing CSV files and MD
 }
 
 export interface AppConfig {

@@ -33,7 +33,7 @@ export function ReportCard({ report, onClick }: ReportCardProps) {
           </div>
           <div className="flex items-center gap-1">
             <CalendarDays size={14} />
-            <span>{new Date(report.date).toLocaleDateString()}</span>
+            <span>{new Date(report.date).toLocaleDateString('nl-NL')}</span>
           </div>
         </div>
       </CardHeader>
@@ -51,7 +51,7 @@ export function ReportCard({ report, onClick }: ReportCardProps) {
         </div>
         
         <div className="text-sm text-muted-foreground">
-          {report.charts.length} chart{report.charts.length !== 1 ? 's' : ''} included
+          {report.charts.length} grafiek{report.charts.length !== 1 ? 'en' : ''} inbegrepen
         </div>
       </CardContent>
     </Card>

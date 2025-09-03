@@ -3,118 +3,119 @@ import { Report } from '../types';
 export const sampleReports: Report[] = [
   {
     id: 'q3-2024-analytics',
-    title: 'Q3 2024 Website Analytics Report',
-    description: 'Comprehensive analysis of website performance, user engagement, and conversion metrics for the third quarter of 2024.',
+    title: 'Q3 2024 Website Analytics Rapport',
+    description: 'Uitgebreide analyse van websiteprestaties, gebruikersbetrokkenheid en conversie-indicatoren voor het derde kwartaal van 2024.',
     author: 'Analytics Team',
     date: '2024-10-15',
-    tags: ['analytics', 'performance', 'quarterly'],
+    tags: ['analytics', 'prestaties', 'kwartaal'],
     thumbnail: '',
+    folderPath: '/rapporten/q3-2024-analytics',
     charts: [
       {
         id: 'monthly-visitors',
         type: 'line',
-        title: 'Monthly Unique Visitors',
+        title: 'Maandelijkse Unieke Bezoekers',
+        csvPath: '/rapporten/q3-2024-analytics/monthly-visitors.csv',
         data: [
-          { month: 'July', visitors: 15420 },
-          { month: 'August', visitors: 18350 },
+          { month: 'Juli', visitors: 15420 },
+          { month: 'Augustus', visitors: 18350 },
           { month: 'September', visitors: 21180 }
         ]
       },
       {
         id: 'traffic-sources',
         type: 'pie',
-        title: 'Traffic Sources Distribution',
+        title: 'Verdeling Verkeersbronnen',
+        csvPath: '/rapporten/q3-2024-analytics/traffic-sources.csv',
         data: [
-          { source: 'Organic Search', percentage: 45 },
+          { source: 'Organisch Zoeken', percentage: 45 },
           { source: 'Direct', percentage: 25 },
           { source: 'Social Media', percentage: 15 },
-          { source: 'Referrals', percentage: 10 },
-          { source: 'Email', percentage: 5 }
+          { source: 'Verwijzingen', percentage: 10 },
+          { source: 'E-mail', percentage: 5 }
         ]
       },
       {
         id: 'page-performance',
         type: 'bar',
-        title: 'Top Performing Pages (Page Views)',
+        title: 'Best Presterende Pagina\'s (Paginaweergaven)',
+        csvPath: '/rapporten/q3-2024-analytics/page-performance.csv',
         data: [
           { page: 'Homepage', views: 8450 },
-          { page: 'Product Catalog', views: 6200 },
-          { page: 'About Us', views: 4100 },
+          { page: 'Productcatalogus', views: 6200 },
+          { page: 'Over Ons', views: 4100 },
           { page: 'Contact', views: 2800 },
           { page: 'Blog', views: 3600 }
         ]
       }
     ],
     content: `
-# Executive Summary
+# Samenvatting
 
-Our Q3 2024 analytics reveal significant growth across all key performance indicators. Website traffic increased by **37%** compared to Q2, with particularly strong performance in organic search visibility.
+Onze Q3 2024 analytics tonen significante groei in alle belangrijke prestatie-indicatoren. Websiteverkeer steeg met **37%** vergeleken met Q2, met bijzonder sterke prestaties in organische zoekzichtbaarheid.
 
-## Key Findings
+## Belangrijkste Bevindingen
 
-### Traffic Growth
-The third quarter showed exceptional growth in unique visitors, with September marking our highest monthly traffic to date. This growth can be attributed to:
+### Verkeersgroei
+Het derde kwartaal toonde uitzonderlijke groei in unieke bezoekers, waarbij september ons hoogste maandelijkse verkeer tot nu toe markeerde. Deze groei kan worden toegeschreven aan:
 
-- Improved SEO strategy implementation
-- Enhanced content marketing efforts  
-- Strategic social media campaigns
-- Optimized user experience across mobile devices
+- Verbeterde SEO-strategie implementatie
+- Verbeterde contentmarketing-inspanningen  
+- Strategische social media campagnes
+- Geoptimaliseerde gebruikerservaring op mobiele apparaten
 
-### User Engagement Patterns
-Analysis of user behavior indicates improved engagement metrics:
+### Gebruikersbetrokkenheidspatronen
+Analyse van gebruikersgedrag toont verbeterde betrokkenheidsmetrieken:
 
-- **Average session duration**: 4.2 minutes (+15% from Q2)
-- **Pages per session**: 3.8 (+22% from Q2)
-- **Bounce rate**: 32% (-8% from Q2)
+- **Gemiddelde sessieduur**: 4.2 minuten (+15% t.o.v. Q2)
+- **Pagina's per sessie**: 3.8 (+22% t.o.v. Q2)
+- **Bouncepercentage**: 32% (-8% t.o.v. Q2)
 
-### Conversion Performance
-E-commerce and lead generation metrics show positive trends:
+### Conversieprestaties
+E-commerce en leadgeneratie metrieken tonen positieve trends:
 
-- **Conversion rate**: 2.8% (+0.4% from Q2)
-- **Average order value**: €127 (+€12 from Q2)
-- **Newsletter signups**: 1,240 new subscribers
+- **Conversiepercentage**: 2.8% (+0.4% t.o.v. Q2)
+- **Gemiddelde bestelwaarde**: €127 (+€12 t.o.v. Q2)
+- **Nieuwsbrief aanmeldingen**: 1.240 nieuwe abonnees
 
-## Recommendations
+## Aanbevelingen
 
-Based on these insights, we recommend:
+Op basis van deze inzichten bevelen we aan:
 
-1. **Double down on content marketing** - Blog posts are driving significant organic traffic
-2. **Optimize mobile experience** - 68% of traffic is now mobile
-3. **Expand social media presence** - Particularly on platforms showing highest engagement
-4. **A/B test checkout process** - To further improve conversion rates
-
-## Technical Notes
-
-Data collection period: July 1 - September 30, 2024
-Tools used: Google Analytics 4, Search Console, internal tracking
-Data accuracy: ±2% margin of error
+1. **Inzetten op contentmarketing** - Blogposts genereren significant organisch verkeer
+2. **Mobiele ervaring optimaliseren** - 68% van het verkeer is nu mobiel
+3. **Social media aanwezigheid uitbreiden** - Vooral op platforms met hoogste betrokkenheid
+4. **A/B test checkout proces** - Om conversiepercentages verder te verbeteren
     `
   },
   {
     id: 'user-satisfaction-2024',
-    title: 'Customer Satisfaction Survey Results 2024',
-    description: 'Annual customer satisfaction survey results showing feedback across product quality, support, and overall experience.',
+    title: 'Klanttevredenheidsonderzoek Resultaten 2024',
+    description: 'Jaarlijkse resultaten van klanttevredenheidsonderzoek met feedback over productkwaliteit, ondersteuning en algehele ervaring.',
     author: 'Customer Success Team',
     date: '2024-09-28',
-    tags: ['survey', 'satisfaction', 'customer-feedback'],
+    tags: ['onderzoek', 'tevredenheid', 'klantfeedback'],
     thumbnail: '',
+    folderPath: '/rapporten/user-satisfaction-2024',
     charts: [
       {
         id: 'satisfaction-scores',
         type: 'bar',
-        title: 'Satisfaction Scores by Category',
+        title: 'Tevredenheidsscores per Categorie',
+        csvPath: '/rapporten/user-satisfaction-2024/satisfaction-scores.csv',
         data: [
-          { category: 'Product Quality', score: 8.4 },
-          { category: 'Customer Support', score: 7.9 },
-          { category: 'Delivery Speed', score: 8.7 },
-          { category: 'Value for Money', score: 7.6 },
-          { category: 'Overall Experience', score: 8.2 }
+          { category: 'Productkwaliteit', score: 8.4 },
+          { category: 'Klantondersteuning', score: 7.9 },
+          { category: 'Leveringssnelheid', score: 8.7 },
+          { category: 'Prijs-kwaliteitverhouding', score: 7.6 },
+          { category: 'Algehele Ervaring', score: 8.2 }
         ]
       },
       {
         id: 'nps-trend',
         type: 'line',
         title: 'Net Promoter Score Trend',
+        csvPath: '/rapporten/user-satisfaction-2024/nps-trend.csv',
         data: [
           { quarter: 'Q1 2024', nps: 42 },
           { quarter: 'Q2 2024', nps: 47 },
@@ -125,231 +126,137 @@ Data accuracy: ±2% margin of error
       {
         id: 'response-distribution',
         type: 'pie',
-        title: 'Response Rate by Customer Segment',
+        title: 'Responspercentage per Klantsegment',
+        csvPath: '/rapporten/user-satisfaction-2024/response-distribution.csv',
         data: [
-          { segment: 'Premium Customers', responses: 340 },
-          { segment: 'Standard Customers', responses: 890 },
-          { segment: 'New Customers', responses: 156 },
+          { segment: 'Premium Klanten', responses: 340 },
+          { segment: 'Standaard Klanten', responses: 890 },
+          { segment: 'Nieuwe Klanten', responses: 156 },
           { segment: 'Enterprise', responses: 78 }
         ]
       }
     ],
     content: `
-# Customer Satisfaction Report 2024
+# Klanttevredenheidsrapport 2024
 
-This comprehensive survey captures feedback from **1,464 customers** across all customer segments, representing our largest satisfaction study to date.
+Dit uitgebreide onderzoek verzamelt feedback van **1.464 klanten** uit alle klantsegmenten en vertegenwoordigt onze grootste tevredenheidsstudie tot nu toe.
 
-## Survey Methodology
+## Onderzoeksmethodologie
 
-- **Survey Period**: August 1-31, 2024
-- **Response Rate**: 23.8% (industry average: 15-20%)
-- **Sample Size**: 1,464 respondents
-- **Method**: Email survey with follow-up reminders
+- **Onderzoeksperiode**: 1-31 augustus 2024
+- **Responspercentage**: 23.8% (branchegemiddelde: 15-20%)
+- **Steekproefgrootte**: 1.464 respondenten
+- **Methode**: E-mail enquête met herinneringen
 
-## Overall Results
+## Algehele Resultaten
 
-Our **Net Promoter Score (NPS) of 55** places us in the "excellent" category, representing a **13-point increase** from last year. This improvement reflects our continued investment in customer experience initiatives.
+Onze **Net Promoter Score (NPS) van 55** plaatst ons in de "uitstekende" categorie, wat een **verbetering van 13 punten** ten opzichte van vorig jaar vertegenwoordigt.
 
-### Satisfaction Highlights
+### Tevredenheidshoogtepunten
 
-**Product Quality** remains our strongest performance area with an average score of **8.4/10**. Customer comments frequently praise:
+**Productkwaliteit** blijft ons sterkste prestatiegebied met een gemiddelde score van **8.4/10**. Klantcommentaren prijzen vaak:
 
-- Build quality and durability
-- Feature completeness  
-- Ease of use
-- Design aesthetics
+- Bouwkwaliteit en duurzaamheid
+- Functiecompleetheid  
+- Gebruiksgemak
+- Ontwerpesthetiek
 
-**Delivery Speed** scored exceptionally well at **8.7/10**, reflecting our investment in logistics partnerships and warehouse optimization.
+### Verbetergebieden
 
-### Areas for Improvement
+**Prijs-kwaliteitverhouding** scoorde het laagst met **7.6/10**, wat aangeeft dat prijsgevoeligheid een zorg blijft.
 
-**Value for Money** scored lowest at **7.6/10**, indicating price sensitivity remains a concern. Key feedback themes:
+**Klantondersteuning** met **7.9/10** toont ruimte voor verbetering, vooral:
 
-- Pricing transparency requests
-- More flexible payment options
-- Clearer value proposition communication
-
-**Customer Support** at **7.9/10** shows room for improvement, particularly:
-
-- Faster response times during peak periods
-- More self-service options
-- Enhanced technical documentation
-
-## Customer Segment Analysis
-
-### Premium Customers (23% of responses)
-- Highest satisfaction across all categories
-- NPS: 67 (Excellent)
-- Primary value drivers: Quality and exclusive features
-
-### Standard Customers (61% of responses)  
-- Balanced satisfaction scores
-- NPS: 48 (Good)
-- Primary concerns: Value and support responsiveness
-
-### New Customers (11% of responses)
-- Lower satisfaction due to onboarding challenges
-- NPS: 31 (Needs improvement)
-- Key improvement area: First-time user experience
-
-### Enterprise (5% of responses)
-- High satisfaction with customization options
-- NPS: 72 (Excellent)
-- Seeking enhanced integration capabilities
-
-## Action Plan
-
-Based on these findings, our 2025 priorities include:
-
-1. **Pricing Strategy Review** - Implement more transparent pricing tiers
-2. **Support Enhancement** - Reduce average response time to under 2 hours
-3. **Onboarding Improvement** - Redesign new customer journey
-4. **Self-Service Expansion** - Launch comprehensive knowledge base
-
-## Conclusion
-
-The 2024 results demonstrate strong customer loyalty and satisfaction growth. Our focus on product quality and operational excellence is clearly resonating with customers, while identified improvement areas provide a clear roadmap for 2025 initiatives.
+- Snellere responstijden tijdens piekperiodes
+- Meer zelfserviceopties
+- Verbeterde technische documentatie
     `
   },
   {
     id: 'sales-performance-h1',
-    title: 'H1 2024 Sales Performance Analysis',
-    description: 'First half sales results with regional breakdown, product performance, and pipeline analysis.',
+    title: 'H1 2024 Verkoopprestatie Analyse',
+    description: 'Eerste helft verkoop resultaten met regionale uitsplitsing, productprestaties en pijplijnanalyse.',
     author: 'Sales Operations',
     date: '2024-07-05',
-    tags: ['sales', 'performance', 'revenue'],
+    tags: ['verkoop', 'prestaties', 'omzet'],
     thumbnail: '',
+    folderPath: '/rapporten/sales-performance-h1',
     charts: [
       {
         id: 'monthly-revenue',
         type: 'area',
-        title: 'Monthly Revenue (€000s)',
+        title: 'Maandelijkse Omzet (€000s)',
+        csvPath: '/rapporten/sales-performance-h1/monthly-revenue.csv',
         data: [
-          { month: 'January', revenue: 280 },
-          { month: 'February', revenue: 320 },
-          { month: 'March', revenue: 380 },
+          { month: 'Januari', revenue: 280 },
+          { month: 'Februari', revenue: 320 },
+          { month: 'Maart', revenue: 380 },
           { month: 'April', revenue: 350 },
-          { month: 'May', revenue: 420 },
-          { month: 'June', revenue: 450 }
+          { month: 'Mei', revenue: 420 },
+          { month: 'Juni', revenue: 450 }
         ]
       },
       {
         id: 'regional-breakdown',
         type: 'bar',
-        title: 'Revenue by Region (H1 2024)',
+        title: 'Omzet per Regio (H1 2024)',
+        csvPath: '/rapporten/sales-performance-h1/regional-breakdown.csv',
         data: [
-          { region: 'North America', revenue: 780 },
-          { region: 'Europe', revenue: 920 },
-          { region: 'Asia Pacific', revenue: 540 },
-          { region: 'Latin America', revenue: 210 },
-          { region: 'Other', revenue: 150 }
+          { region: 'Noord-Amerika', revenue: 780 },
+          { region: 'Europa', revenue: 920 },
+          { region: 'Azië-Pacific', revenue: 540 },
+          { region: 'Latijns-Amerika', revenue: 210 },
+          { region: 'Overig', revenue: 150 }
         ]
       },
       {
         id: 'product-mix',
         type: 'pie',
-        title: 'Revenue by Product Category',
+        title: 'Omzet per Productcategorie',
+        csvPath: '/rapporten/sales-performance-h1/product-mix.csv',
         data: [
-          { category: 'Software Licenses', revenue: 1200 },
-          { category: 'Support Services', revenue: 800 },
-          { category: 'Professional Services', revenue: 450 },
+          { category: 'Software Licenties', revenue: 1200 },
+          { category: 'Ondersteuningsdiensten', revenue: 800 },
+          { category: 'Professionele Diensten', revenue: 450 },
           { category: 'Training', revenue: 150 }
         ]
       }
     ],
     content: `
-# H1 2024 Sales Performance Summary
+# H1 2024 Verkoopprestatie Samenvatting
 
-The first half of 2024 delivered **€2.6M in total revenue**, representing **18% growth** over H1 2023 and exceeding our target by 8%.
+De eerste helft van 2024 leverde **€2.6M totale omzet** op, wat **18% groei** ten opzichte van H1 2023 vertegenwoordigt en ons doelwit met 8% overtreft.
 
-## Revenue Performance
+## Omzetprestaties
 
-### Monthly Progression
-Q2 showed particularly strong performance with **June achieving our highest monthly revenue** of €450K. This represents:
+### Maandelijkse Progressie
+Q2 toonde bijzonder sterke prestaties met **juni dat onze hoogste maandelijkse omzet** van €450K behaalde.
 
-- **28% growth** over June 2023
-- **125% achievement** of monthly target
-- **3 consecutive months** of growth acceleration
+### Regionale Analyse
 
-### Regional Analysis
+**Europa blijft onze sterkste markt** en draagt 35% van de totale omzet bij (€920K). Belangrijke drijfveren zijn onder meer:
 
-**Europe continues to be our strongest market**, contributing 35% of total revenue (€920K). Key drivers include:
+- Succesvolle expansie in Duitse en Franse markten
+- Sterke verlengingspercentages van bestaande klanten
+- Nieuwe partnerschapsovereenkomsten met regionale systeemintegrators
 
-- Successful expansion in German and French markets
-- Strong renewal rates from existing customers
-- New partnership agreements with regional system integrators
+**Noord-Amerika** droeg €780K bij (30% van omzet) met hoogtepunten waaronder:
 
-**North America** contributed €780K (30% of revenue) with highlights including:
+- Grote enterprise deal sluitingen in Q2
+- Verbeterde verkoopcyclus efficiëntie
+- Verbeterde kanaalpartner prestaties
 
-- Major enterprise deal closures in Q2
-- Improved sales cycle efficiency
-- Enhanced channel partner performance
+## Productprestaties
 
-**Asia Pacific growth** of 45% YoY demonstrates the success of our regional expansion strategy, though absolute numbers remain below target due to longer sales cycles in the region.
+### Software Licenties (46% van omzet)
+Ons kernproduct blijft groei stimuleren met **€1.2M in H1 omzet**.
 
-## Product Performance
+### Ondersteuningsdiensten (31% van omzet)
+Terugkerende omzet uit ondersteuningsdiensten biedt stabiele basis met **€800K**.
 
-### Software Licenses (46% of revenue)
-Our core software product continues to drive growth with **€1.2M in H1 revenue**. Success factors:
+## Pijplijn Analyse
 
-- Enhanced feature set released in Q1
-- Competitive pricing adjustments
-- Improved demo-to-close conversion rates
-
-### Support Services (31% of revenue)
-Recurring revenue from support services provides stable foundation at **€800K**. Notable improvements:
-
-- 96% customer retention rate
-- Average contract value increase of 12%
-- Successful upselling to premium support tiers
-
-### Professional Services (17% of revenue)
-Custom implementation services generated **€450K**, with strong margins maintained despite increased project complexity.
-
-## Pipeline Analysis
-
-Our Q3/Q4 pipeline shows **€3.1M in qualified opportunities**, indicating potential for continued growth momentum:
-
-- **€1.8M** in Q3 forecast (confidence: 78%)
-- **€1.3M** in Q4 early-stage opportunities
-- **Average deal size increase** of 15% over H1 2023
-
-## Key Performance Indicators
-
-### Sales Efficiency Metrics
-- **Sales cycle length**: 89 days (target: 90 days) ✓
-- **Lead conversion rate**: 23% (target: 20%) ✓
-- **Customer acquisition cost**: €4,200 (target: €4,500) ✓
-- **Annual contract value**: €28,400 (target: €25,000) ✓
-
-### Team Performance
-Our sales team of 12 professionals achieved:
-
-- **108% of team quota** attainment
-- **9 out of 12 reps** exceeded individual targets
-- **142% increase** in qualified demos delivered
-
-## Challenges and Opportunities
-
-### Challenges
-1. **Longer sales cycles in enterprise segment** - Average increased from 120 to 135 days
-2. **Competitive pressure on pricing** - Particularly in North American market
-3. **Resource constraints in customer success** - Impacting expansion revenue potential
-
-### Opportunities
-1. **Partnership channel development** - Early success suggests 25% revenue potential
-2. **Product line extension** - Customer demand for adjacent solutions
-3. **International expansion** - Untapped markets in South America and Africa
-
-## H2 2024 Outlook
-
-Based on current pipeline and market conditions, we forecast:
-
-- **Q3 Revenue Target**: €1.5M (confidence: high)
-- **Q4 Revenue Target**: €1.7M (confidence: medium)
-- **Full Year Projection**: €5.8M (16% growth over 2023)
-
-Key initiatives for H2 include accelerated partner recruitment, enterprise sales team expansion, and enhanced customer success programs to drive expansion revenue.
+Onze Q3/Q4 pijplijn toont **€3.1M in gekwalificeerde kansen**, wat wijst op potentieel voor voortgezet groeimomentum.
     `
   }
 ];

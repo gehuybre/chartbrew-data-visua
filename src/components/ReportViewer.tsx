@@ -24,7 +24,7 @@ export function ReportViewer({ report, onBack }: ReportViewerProps) {
               className="flex items-center gap-2"
             >
               <ArrowLeft size={16} />
-              Back to Reports
+              Terug naar Rapporten
             </Button>
           </div>
           
@@ -44,7 +44,7 @@ export function ReportViewer({ report, onBack }: ReportViewerProps) {
               </div>
               <div className="flex items-center gap-2">
                 <CalendarDays size={16} />
-                <span>{new Date(report.date).toLocaleDateString('en-US', { 
+                <span>{new Date(report.date).toLocaleDateString('nl-NL', { 
                   year: 'numeric', 
                   month: 'long', 
                   day: 'numeric' 
@@ -70,7 +70,7 @@ export function ReportViewer({ report, onBack }: ReportViewerProps) {
           {report.charts.length > 0 && (
             <section>
               <h2 className="font-inter font-semibold text-2xl mb-6 text-foreground">
-                Data Visualizations
+                Datavisualisaties
               </h2>
               <div className="grid gap-8">
                 {report.charts.map((chart, index) => (
