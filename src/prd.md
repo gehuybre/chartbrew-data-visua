@@ -41,14 +41,14 @@
 - **Accessibility conscious**: Respecteert prefers-reduced-motion instellingen
 - **Performance optimized**: Hardware-accelerated CSS transforms en transitions
 
-### Chart Grid System
-- **Flexible layouts**: Ondersteuning voor 1x1, 2x2, 3x1, 4x1 en custom grid configuraties
 - **Responsive design**: Automatische aanpassing van kolommen op kleinere schermen
 - **Consistent sizing**: Intelligente chart afmetingen gebaseerd op grid layout
 - **Interactive hover states**: Subtle animaties en verhoogde focus per chart
 - **Unified styling**: Consistente spacing, shadows en transitions
 - **Title support**: Optionele titels per chart in grid configuratie
 
+### Zoek & Navigatie
+- **Doorzoekbare rapporten**: Filter op titel, tags, auteur, content
 ### Zoek & Navigatie
 - **Doorzoekbare rapporten**: Filter op titel, tags, auteur, content
 - **Rapport overzicht**: Grid layout met cards voor elk rapport
@@ -59,8 +59,6 @@
 ### Visual Tone & Identity
 **Emotional Response**: Vertrouwen en professionaliteit met toegankelijke data presentatie
 **Design Personality**: Zakelijk maar toegankelijk, modern en clean
-**Visual Metaphors**: Data storytelling, documentanalyse, professionele rapportage
-
 ### Color Strategy
 **Color Scheme Type**: Analogous - blauw-gebaseerd professioneel palet
 **Primary Color**: Deep blue (oklch(0.45 0.15 240)) - betrouwbaarheid en professionaliteit
