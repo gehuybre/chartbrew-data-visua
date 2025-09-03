@@ -2,6 +2,7 @@ export { ChartConfig, colorPalettes } from './chartConfig';
 
 export interface ChartData {
   id: string;
+  title?: string; // Optional chart title
   configPath: string; // Path to chart config JSON file
   data?: any[]; // Optional pre-loaded data for demos
 }

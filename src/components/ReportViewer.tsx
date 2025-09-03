@@ -3,11 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Scrollytelling } from './Scrollytelling';
 import { ChartRenderer } from './ChartRenderer';
-import { SimpleChartTest } from './SimpleChartTest';
-import { SimpleBarChart, testBarData, testLineData } from './SimpleBarChart';
-import { DirectChartTest } from './DirectChartTest';
-import { SimpleD3Test } from './SimpleD3Test';
-import { DataDebugger } from './DataDebugger';
+import { ChartGrid, ChartGrid2x2 } from './ChartGrid';
 import { Report } from '@/types';
 import { ArrowLeft, CalendarDays, User } from '@phosphor-icons/react';
 
@@ -300,16 +296,6 @@ function Q3AnalyticsScrollyContent({ report }: { report: Report }) {
           </div>
           
           <div className="scrolly-chart-container">
-            <DataDebugger configPath="/src/rapporten/q3-2024-analytics/monthly-visitors.config.json" />
-            
-            <SimpleD3Test />
-            
-            <DirectChartTest />
-            
-            <SimpleBarChart data={testBarData} width={600} height={300} />
-            
-            <SimpleChartTest />
-            
             <ChartRenderer
               configPath="/src/rapporten/q3-2024-analytics/monthly-visitors.config.json"
               width={800}
@@ -367,6 +353,89 @@ function Q3AnalyticsScrollyContent({ report }: { report: Report }) {
         </div>
       </section>
 
+      <section id="chart-overview" className="scrolly-section chart-section">
+        <div className="container">
+          <div className="section-header">
+            <h2>Overzicht Dashboard</h2>
+            <p>
+              Een snel overzicht van de belangrijkste metrics in Q3 2024, 
+              getoond in een compact dashboard formaat.
+            </p>
+          </div>
+          
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold mb-4">Performance Metrics Grid</h3>
+            <ChartGrid2x2
+              charts={[
+                {
+                  id: 'traffic-grid',
+                  title: 'Maandelijks Verkeer',
+                  configPath: '/src/rapporten/q3-2024-analytics/monthly-visitors.config.json'
+                },
+                {
+                  id: 'pages-grid',
+                  title: 'Populaire Pagina\'s',
+                  configPath: '/src/rapporten/q3-2024-analytics/page-performance.config.json'
+                },
+                {
+                  id: 'traffic-sources-grid',
+                  title: 'Verkeersbronnen',
+                  configPath: '/src/rapporten/q3-2024-analytics/traffic-sources.config.json'
+                },
+                {
+                  id: 'device-types-grid',
+                  title: 'Apparaattypen',
+                  configPath: '/src/rapporten/q3-2024-analytics/device-types.config.json'
+                }
+              ]}
+              className="mb-8"
+            />
+          </div>
+          
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold mb-4">Horizontale Vergelijking</h3>
+            <ChartGrid
+              charts={[
+                {
+                  id: 'traffic-horizontal',
+                  configPath: '/src/rapporten/q3-2024-analytics/monthly-visitors.config.json'
+                },
+                {
+                  id: 'sources-horizontal',
+                  configPath: '/src/rapporten/q3-2024-analytics/traffic-sources.config.json'
+                },
+                {
+                  id: 'devices-horizontal',
+                  configPath: '/src/rapporten/q3-2024-analytics/device-types.config.json'
+                }
+              ]}
+              columns={3}
+              gap="sm"
+              className="mb-8"
+            />
+          </div>
+          
+          <div className="analysis-text">
+            <h4>Dashboard Inzichten</h4>
+            <p>
+              Het dashboard toont de onderlinge verbanden tussen verschillende metrics. 
+              De groei in mobiel verkeer correleert met de toename van sociale media referenties, 
+              wat wijst op effectieve mobile-first content strategie.
+            </p>
+            
+            <div className="highlight-box">
+              <h4>Grid Visualisatie Voordelen</h4>
+              <ul>
+                <li><strong>Compacte weergave</strong> - Meerdere grafieken naast elkaar voor snelle vergelijking</li>
+                <li><strong>Responsive design</strong> - Automatische aanpassing aan schermgrootte</li>
+                <li><strong>Flexibele layouts</strong> - 2x2, 3x1, 4x1 of custom configuraties mogelijk</li>
+                <li><strong>Consistente styling</strong> - Uniforme uitstraling binnen het grid</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="recommendations" className="scrolly-section text-section">
         <div className="container">
           <h2>Aanbevelingen voor Q4</h2>
@@ -419,16 +488,15 @@ function DefaultScrollyContent({ report }: { report: Report }) {
           <p className="lead">{report.description}</p>
           
           <div className="charts-section">
-            {report.charts.map(chart => (
-              <div key={chart.id} className="chart-container" style={{ margin: '3rem 0' }}>
-                <DataDebugger configPath={chart.configPath} />
-                <ChartRenderer
-                  configPath={chart.configPath}
-                  width={800}
-                  height={400}
-                />
-              </div>
-            ))}
+            <ChartGrid
+              charts={report.charts.map(chart => ({
+                id: chart.id,
+                configPath: chart.configPath,
+                title: chart.title // This will now work since we added it to the type
+              }))}
+              columns={1}
+              gap="lg"
+            />
           </div>
         </div>
       </section>

@@ -53,12 +53,10 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
   const loadChart = async () => {
     try {
-      console.log('Loading chart config from:', configPath);
       setIsLoading(true);
       setError(null);
       
       const chartConfig = await loadChartConfig(configPath);
-      console.log('Loaded chart config:', chartConfig);
       
       if (!chartConfig) {
         throw new Error('No chart config returned');
@@ -67,7 +65,6 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       setConfig(chartConfig);
       
       const csvData = await loadCSVData(chartConfig.dataSource);
-      console.log('Loaded CSV data:', csvData);
       
       if (!csvData || csvData.length === 0) {
         throw new Error('No data returned from CSV source');
@@ -85,15 +82,8 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
   const renderChart = (config: ChartConfig, data: any[]) => {
     if (!svgRef.current) {
-      console.log('SVG ref not available yet');
       return;
     }
-    
-    console.log('=== CHART RENDERING START ===');
-    console.log('Chart ID:', config.id);
-    console.log('Chart type:', config.type);
-    console.log('Data:', data);
-    console.log('Data length:', data.length);
 
     const svg = d3.select(svgRef.current);
     
@@ -115,28 +105,22 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
     // Get colors based on palette
     const colors = getChartColors(config.colors);
-    console.log('Using colors:', colors);
 
     try {
       switch (config.type) {
         case 'line':
-          console.log('Rendering line chart');
           renderLineChart(g, data, config, chartWidth, chartHeight, colors);
           break;
         case 'bar':
-          console.log('Rendering bar chart');
           renderBarChart(g, data, config, chartWidth, chartHeight, colors);
           break;
         case 'pie':
-          console.log('Rendering pie chart');
           renderPieChart(g, data, config, chartWidth, chartHeight, colors);
           break;
         case 'area':
-          console.log('Rendering area chart');
           renderAreaChart(g, data, config, chartWidth, chartHeight, colors);
           break;
         default:
-          console.warn(`Chart type ${config.type} not implemented yet`);
           // Add a fallback message
           g.append('text')
             .attr('x', chartWidth / 2)
@@ -149,7 +133,6 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
       // Add title
       if (config.title) {
-        console.log('Adding title:', config.title);
         svg.append('text')
           .attr('x', width / 2)
           .attr('y', 25)
@@ -162,7 +145,6 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
       // Add subtitle
       if (config.subtitle) {
-        console.log('Adding subtitle:', config.subtitle);
         svg.append('text')
           .attr('x', width / 2)
           .attr('y', 45)
@@ -172,14 +154,8 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
           .text(config.subtitle);
       }
       
-      console.log('=== CHART RENDERING COMPLETED ===');
-      console.log('Chart ID:', config.id, 'rendered successfully');
     } catch (error) {
-      console.error('=== CHART RENDERING ERROR ===');
-      console.error('Chart ID:', config.id);
-      console.error('Error:', error);
-      console.error('Stack:', error instanceof Error ? error.stack : 'No stack trace');
-      
+      console.error('Chart rendering error:', error);
       // Switch to fallback instead of showing error in chart
       setUseFallback(true);
       throw error; // Re-throw to trigger useEffect fallback
@@ -217,28 +193,19 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
   };
 
   const renderLineChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
-    console.log('=== LINE CHART RENDERING ===');
-    console.log('Data:', data);
-    console.log('Config:', config);
     
     if (!config.xAxis || !config.yAxis) {
-      console.error('Missing axis configuration for line chart');
       throw new Error('Missing axis configuration');
     }
 
     if (!data || data.length === 0) {
-      console.error('No data available for line chart');
       throw new Error('No data available');
     }
-
-    console.log('X field:', config.xAxis.field);
-    console.log('Y field:', config.yAxis.field);
 
     // Validate that the fields exist in the data
     const firstItem = data[0];
     if (!(config.xAxis.field in firstItem) || !(config.yAxis.field in firstItem)) {
       const error = `Fields not found in data. Available fields: ${Object.keys(firstItem).join(', ')}`;
-      console.error(error);
       throw new Error(error);
     }
 
@@ -347,22 +314,15 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .attr('fill', colors[0])
       .attr('stroke', 'white')
       .attr('stroke-width', 2);
-
-    console.log('Line chart rendering completed');
   };
 
   const renderBarChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
-    console.log('=== BAR CHART RENDERING ===');
-    console.log('Data:', data);
-    console.log('Config:', config);
     
     if (!config.xAxis || !config.yAxis) {
-      console.error('Missing axis configuration for bar chart');
       throw new Error('Missing axis configuration');
     }
 
     if (!data || data.length === 0) {
-      console.error('No data available for bar chart');
       throw new Error('No data available');
     }
 
@@ -370,7 +330,6 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     const firstItem = data[0];
     if (!(config.xAxis.field in firstItem) || !(config.yAxis.field in firstItem)) {
       const error = `Fields not found in data. Available fields: ${Object.keys(firstItem).join(', ')}`;
-      console.error(error);
       throw new Error(error);
     }
 
@@ -459,17 +418,11 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .attr('height', (d: any) => height - yScale(Number(d[config.yAxis!.field])))
       .attr('fill', (_, i) => colors[i % colors.length])
       .attr('rx', config.bar?.borderRadius || 0);
-
-    console.log('Bar chart rendering completed');
   };
 
   const renderPieChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
-    console.log('=== PIE CHART RENDERING ===');
-    console.log('Data:', data);
-    console.log('Config:', config);
     
     if (!data || data.length === 0) {
-      console.error('No data available for pie chart');
       throw new Error('No data available');
     }
 
@@ -477,12 +430,16 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // For pie charts, we expect data with 'label' and 'value' fields, or use the first two fields
+    // For pie charts, we can use specific fields or default to first two fields
     const keys = Object.keys(data[0] || {});
-    const labelField = keys[0];
-    const valueField = keys[1];
-
-    console.log('Using fields:', { labelField, valueField });
+    const labelField = config.pie?.labelField || keys[0];
+    const valueField = config.pie?.valueField || keys[1] || keys.find(key => 
+      key.toLowerCase().includes('value') || 
+      key.toLowerCase().includes('count') || 
+      key.toLowerCase().includes('aantal') ||
+      key.toLowerCase().includes('gebruikers') ||
+      !isNaN(Number(data[0][key]))
+    ) || keys[1];
 
     // Transform data to ensure we have numeric values
     const processedData = data.map(d => ({
@@ -557,8 +514,6 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .style('fill', '#374151')
         .text((d: any) => d.data[labelField]);
     }
-
-    console.log('Pie chart rendering completed');
   };
 
   const renderAreaChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {

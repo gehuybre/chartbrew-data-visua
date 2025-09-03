@@ -69,6 +69,8 @@ export interface ChartConfig {
 
   // Chart specific options
   pie?: {
+    labelField?: string;
+    valueField?: string;
     innerRadius?: number;
     padAngle?: number;
     cornerRadius?: number;

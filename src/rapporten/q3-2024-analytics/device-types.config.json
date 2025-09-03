@@ -1,0 +1,37 @@
+{
+  "id": "device-types",
+  "type": "pie",
+  "title": "Apparaattypen Distributie",
+  "subtitle": "Verdeling van gebruikers per apparaattype",
+  "dataSource": "/src/rapporten/q3-2024-analytics/device-types.csv",
+  "colors": {
+    "palette": "default"
+  },
+  "legend": {
+    "show": true,
+    "position": "right"
+  },
+  "grid": {
+    "show": false
+  },
+  "tooltip": {
+    "show": true,
+    "format": "{label}: {value} ({percentage})"
+  },
+  "pie": {
+    "labelField": "apparaat",
+    "valueField": "gebruikers",
+    "innerRadius": 0,
+    "padAngle": 0.02,
+    "cornerRadius": 2,
+    "sortByValue": true
+  },
+  "footer": {
+    "text": "Data gebaseerd op Google Analytics Q3 2024",
+    "source": "Google Analytics",
+    "notes": [
+      "Desktop omvat alle desktop en laptop computers",
+      "Tablet categorie bestaat voornamelijk uit iPad en Android tablets"
+    ]
+  }
+}

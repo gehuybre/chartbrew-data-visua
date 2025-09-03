@@ -1023,6 +1023,60 @@
   --font-mono: "JetBrains Mono";
 }
 
+/* Chart Grid Styles */
+.chart-grid {
+  width: 100%;
+}
+
+.chart-grid-item {
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chart-grid-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.chart-grid .chart-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-grid .chart-container > .card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-grid .chart-container .chart-action-buttons {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.chart-grid-item:hover .chart-action-buttons {
+  opacity: 1;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+  .chart-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .chart-grid.md\\:grid-cols-3,
+  .chart-grid.lg\\:grid-cols-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .chart-grid.xl\\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
