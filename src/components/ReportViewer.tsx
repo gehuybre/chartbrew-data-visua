@@ -6,6 +6,8 @@ import { ChartRenderer } from './ChartRenderer';
 import { SimpleChartTest } from './SimpleChartTest';
 import { SimpleBarChart, testBarData, testLineData } from './SimpleBarChart';
 import { DirectChartTest } from './DirectChartTest';
+import { SimpleD3Test } from './SimpleD3Test';
+import { DataDebugger } from './DataDebugger';
 import { Report } from '@/types';
 import { ArrowLeft, CalendarDays, User } from '@phosphor-icons/react';
 
@@ -298,6 +300,10 @@ function Q3AnalyticsScrollyContent({ report }: { report: Report }) {
           </div>
           
           <div className="scrolly-chart-container">
+            <DataDebugger configPath="/src/rapporten/q3-2024-analytics/monthly-visitors.config.json" />
+            
+            <SimpleD3Test />
+            
             <DirectChartTest />
             
             <SimpleBarChart data={testBarData} width={600} height={300} />
@@ -415,6 +421,7 @@ function DefaultScrollyContent({ report }: { report: Report }) {
           <div className="charts-section">
             {report.charts.map(chart => (
               <div key={chart.id} className="chart-container" style={{ margin: '3rem 0' }}>
+                <DataDebugger configPath={chart.configPath} />
                 <ChartRenderer
                   configPath={chart.configPath}
                   width={800}
