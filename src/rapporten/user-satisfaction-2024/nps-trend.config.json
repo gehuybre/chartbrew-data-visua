@@ -1,0 +1,67 @@
+{
+  "id": "nps-trend",
+  "title": "Net Promoter Score Ontwikkeling",
+  "subtitle": "Maandelijkse NPS trends over het afgelopen jaar",
+  "type": "line",
+  "dataSource": "/src/rapporten/user-satisfaction-2024/nps-trend.csv",
+  "xAxis": {
+    "field": "month",
+    "label": "Maand"
+  },
+  "yAxis": {
+    "field": "nps",
+    "label": "NPS Score",
+    "format": "+.0f"
+  },
+  "colors": {
+    "scheme": "dynamic",
+    "primary": "oklch(0.65 0.12 200)",
+    "secondary": "oklch(0.45 0.15 240)"
+  },
+  "lines": {
+    "width": 3,
+    "style": "solid",
+    "smooth": true
+  },
+  "grid": {
+    "show": true,
+    "style": "dashed",
+    "color": "oklch(0.88 0.01 240)"
+  },
+  "legend": {
+    "show": true,
+    "position": "top"
+  },
+  "animation": {
+    "enabled": true,
+    "preset": "dynamic",
+    "staggerElements": true,
+    "customDuration": "1.2s",
+    "reduceMotion": true,
+    "chartType": "line"
+  },
+  "annotations": [
+    {
+      "type": "line",
+      "value": 0,
+      "label": "Neutrale NPS",
+      "color": "oklch(0.55 0.08 240)",
+      "style": "dashed"
+    },
+    {
+      "type": "line",
+      "value": 50,
+      "label": "Excellente NPS",
+      "color": "oklch(0.7 0.15 150)",
+      "style": "solid"
+    }
+  ],
+  "footer": {
+    "text": "NPS wordt berekend als % Promotors - % Detractors",
+    "source": "Maandelijkse klantenquête",
+    "notes": [
+      "Scores van 0-6: Detractors, 7-8: Passives, 9-10: Promotors",
+      "Een NPS van +50 wordt beschouwd als uitstekend"
+    ]
+  }
+}

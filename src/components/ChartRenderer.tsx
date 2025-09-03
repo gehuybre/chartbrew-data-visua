@@ -7,6 +7,7 @@ import { Download, Code, FileBarChart } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { useChartAnimation } from '../hooks/useChartAnimation';
 import { ChartTransitionManager, animationDurations, staggerDelays } from '../utils/chartTransitions';
+import { ChartAnimationConfig, initializeChartAnimations, applyAnimationPreset } from '../utils/chartAnimations';
 import * as d3 from 'd3';
 
 // Animation constants
@@ -83,6 +84,12 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     console.log('Rendering chart:', config.id, 'with data:', data);
 
     const svg = d3.select(svgRef.current);
+    
+    // Initialize animation system if animation config exists
+    const animationConfig = config as ChartAnimationConfig;
+    if (animationConfig.animation?.enabled && containerRef.current) {
+      initializeChartAnimations(containerRef.current, animationConfig);
+    }
     
     // Smooth transition for clearing existing chart
     svg.selectAll('*')
@@ -210,44 +217,28 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .range([height, 0]);
 
     // Add grid if enabled with fade-in animation
+    // Add grid with animation classes
     if (config.grid?.show) {
       const xGrid = g.append('g')
-        .attr('class', 'grid')
-        .attr('transform', `translate(0,${height})`)
-        .style('opacity', 0);
-      
-      xGrid.transition()
-        .duration(ANIMATION_DURATION)
-        .delay(ANIMATION_DURATION / 4)
-        .style('opacity', 0.3);
+        .attr('class', 'grid chart-grid chart-grid-line')
+        .attr('transform', `translate(0,${height})`);
       
       xGrid.call(d3.axisBottom(xScale).tickSize(-height).tickFormat(''))
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
         .style('stroke', config.grid.color || 'var(--border)');
 
       const yGrid = g.append('g')
-        .attr('class', 'grid')
-        .style('opacity', 0);
-      
-      yGrid.transition()
-        .duration(ANIMATION_DURATION)
-        .delay(ANIMATION_DURATION / 4)
-        .style('opacity', 0.3);
+        .attr('class', 'grid chart-grid chart-grid-line');
       
       yGrid.call(d3.axisLeft(yScale).tickSize(-width).tickFormat(''))
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
         .style('stroke', config.grid.color || 'var(--border)');
     }
 
-    // Add axes with slide-in animation
+    // Add axes with animation classes
     const xAxis = g.append('g')
-      .attr('transform', `translate(0,${height})`)
-      .style('opacity', 0);
-    
-    xAxis.transition()
-      .duration(ANIMATION_DURATION)
-      .delay(ANIMATION_DURATION / 3)
-      .style('opacity', 1);
+      .attr('class', 'chart-axis')
+      .attr('transform', `translate(0,${height})`);
     
     xAxis.call(d3.axisBottom(xScale))
       .selectAll('text')
@@ -255,12 +246,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .style('fill', 'var(--foreground)');
 
     const yAxis = g.append('g')
-      .style('opacity', 0);
-    
-    yAxis.transition()
-      .duration(ANIMATION_DURATION)
-      .delay(ANIMATION_DURATION / 3)
-      .style('opacity', 1);
+      .attr('class', 'chart-axis');
     
     yAxis.call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')))
       .selectAll('text')
@@ -308,9 +294,10 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       line.curve(d3.curveCardinal);
     }
 
-    // Add line with drawing animation using transition manager
+    // Add line with animation classes
     const path = g.append('path')
       .datum(data)
+      .attr('class', 'chart-line chart-path')
       .attr('fill', 'none')
       .attr('stroke', colors[0])
       .attr('stroke-width', config.lines?.width || 2)
@@ -327,14 +314,22 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       }
     );
 
-    // Add dots with transition manager
+    // Add dots with animation classes
     const dots = g.selectAll('.dot')
       .data(data)
       .enter().append('circle')
-      .attr('class', 'dot')
+      .attr('class', 'dot chart-data-element chart-dot')
       .attr('cx', (d: any) => xScale(String(d[config.xAxis!.field]))! + xScale.bandwidth() / 2)
       .attr('cy', (d: any) => yScale(Number(d[config.yAxis!.field])))
       .attr('fill', colors[0]);
+
+    // Apply animation presets to each dot
+    const animationConfig = config as ChartAnimationConfig;
+    if (animationConfig.animation?.enabled && animationConfig.animation.preset) {
+      dots.each(function(d, i) {
+        applyAnimationPreset(this as HTMLElement, animationConfig.animation!.preset!, 'line', i + 1);
+      });
+    }
 
     // Use transition manager for dots animation
     transitionManager.animateDots(dots, {
@@ -380,45 +375,28 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .nice()
       .range([height, 0]);
 
-    // Add grid if enabled with fade-in animation
+    // Add grid with animation classes
     if (config.grid?.show) {
       const xGrid = g.append('g')
-        .attr('class', 'grid')
-        .attr('transform', `translate(0,${height})`)
-        .style('opacity', 0);
-      
-      xGrid.transition()
-        .duration(ANIMATION_DURATION)
-        .delay(ANIMATION_DURATION / 4)
-        .style('opacity', 0.3);
+        .attr('class', 'grid chart-grid chart-grid-line')
+        .attr('transform', `translate(0,${height})`);
       
       xGrid.call(d3.axisBottom(xScale).tickSize(-height).tickFormat(''))
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
         .style('stroke', config.grid.color || 'var(--border)');
 
       const yGrid = g.append('g')
-        .attr('class', 'grid')
-        .style('opacity', 0);
-      
-      yGrid.transition()
-        .duration(ANIMATION_DURATION)
-        .delay(ANIMATION_DURATION / 4)
-        .style('opacity', 0.3);
+        .attr('class', 'grid chart-grid chart-grid-line');
       
       yGrid.call(d3.axisLeft(yScale).tickSize(-width).tickFormat(''))
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
         .style('stroke', config.grid.color || 'var(--border)');
     }
 
-    // Add axes with slide-in animation
+    // Add axes with animation classes
     const xAxis = g.append('g')
-      .attr('transform', `translate(0,${height})`)
-      .style('opacity', 0);
-    
-    xAxis.transition()
-      .duration(ANIMATION_DURATION)
-      .delay(ANIMATION_DURATION / 3)
-      .style('opacity', 1);
+      .attr('class', 'chart-axis')
+      .attr('transform', `translate(0,${height})`);
     
     xAxis.call(d3.axisBottom(xScale))
       .selectAll('text')
@@ -474,16 +452,24 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .style('opacity', 1);
     }
 
-    // Add bars with enhanced transition manager
+    // Add bars with animation classes
     const bars = g.selectAll('.bar')
       .data(data)
       .enter().append('rect')
-      .attr('class', 'bar')
+      .attr('class', 'bar chart-data-element chart-bar')
       .attr('x', (d: any) => xScale(String(d[config.xAxis!.field]))!)
       .attr('width', xScale.bandwidth())
       .attr('fill', colors[0])
       .attr('rx', config.bar?.borderRadius || 0)
       .style('opacity', 0.8);
+
+    // Apply animation presets to each bar
+    const animationConfig = config as ChartAnimationConfig;
+    if (animationConfig.animation?.enabled && animationConfig.animation.preset) {
+      bars.each(function(d, i) {
+        applyAnimationPreset(this as HTMLElement, animationConfig.animation!.preset!, 'bar', i + 1);
+      });
+    }
 
     // Use transition manager for bar animation
     transitionManager.animateBars(
@@ -596,24 +582,17 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .delay(ANIMATION_DURATION)
       .style('opacity', 1);
 
-    // Add legend if enabled with staggered animation
+    // Add legend with animation classes
     if (config.legend?.show && config.legend.position === 'right') {
       const legend = g.append('g')
-        .attr('class', 'legend')
+        .attr('class', 'legend chart-legend')
         .attr('transform', `translate(${radius + 30}, ${-radius})`);
 
       const legendItems = legend.selectAll('.legend-item')
         .data(pieData)
         .enter().append('g')
-        .attr('class', 'legend-item')
-        .attr('transform', (d, i) => `translate(0, ${i * 25})`)
-        .style('opacity', 0);
-
-      // Animate legend items
-      legendItems.transition()
-        .duration(ANIMATION_DURATION / 2)
-        .delay((d, i) => ANIMATION_DURATION + i * STAGGER_DELAY)
-        .style('opacity', 1);
+        .attr('class', 'legend-item chart-legend-item')
+        .attr('transform', (d, i) => `translate(0, ${i * 25})`);
 
       legendItems.append('rect')
         .attr('width', 18)
@@ -750,8 +729,8 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
   }
 
   return (
-    <div ref={containerRef}>
-      <Card className={`p-6 ${className} ${isVisible ? 'animate-in' : 'opacity-0'}`}>
+    <div ref={containerRef} className={`chart-container ${className}`}>
+      <Card className={`p-6 ${isVisible ? 'animate-in' : 'opacity-0'}`}>
         <div className="chart-container">
           <svg
             ref={svgRef}
@@ -776,7 +755,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
               variant="outline"
               size="sm"
               onClick={downloadCSV}
-              className="flex items-center gap-2 transition-all duration-200 hover:scale-105"
+              className="flex items-center gap-2 mr-2"
             >
               <Download size={16} />
               Download CSV
@@ -786,7 +765,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
               variant="outline"
               size="sm"
               onClick={copyIframeCode}
-              className="flex items-center gap-2 transition-all duration-200 hover:scale-105"
+              className="flex items-center gap-2"
             >
               <Code size={16} />
               Kopieer iframe

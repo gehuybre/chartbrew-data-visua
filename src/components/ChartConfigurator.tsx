@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AnimationPresetSelector } from './AnimationPresetSelector';
+import { AnimationDemo } from './AnimationDemo';
 import { 
   ChartTemplateConfig,
   generateChartConfig,
@@ -16,16 +18,21 @@ import {
   commonAnnotations,
   exportChartConfig
 } from '@/templates/chartTemplates';
-import { ChartLine, Download, Plus, Trash2, Eye } from '@phosphor-icons/react';
+import { ChartAnimationConfig } from '@/utils/chartAnimations';
+import { ChartLine, Download, Plus, Trash2, Eye, Sparkle } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
+interface ExtendedChartTemplateConfig extends ChartTemplateConfig {
+  animation?: ChartAnimationConfig['animation'];
+}
+
 interface ChartConfiguratorProps {
-  onConfigGenerated?: (config: ChartTemplateConfig) => void;
-  initialConfig?: Partial<ChartTemplateConfig>;
+  onConfigGenerated?: (config: ExtendedChartTemplateConfig) => void;
+  initialConfig?: Partial<ExtendedChartTemplateConfig>;
 }
 
 export function ChartConfigurator({ onConfigGenerated, initialConfig }: ChartConfiguratorProps) {
-  const [config, setConfig] = useState<Partial<ChartTemplateConfig>>({
+  const [config, setConfig] = useState<Partial<ExtendedChartTemplateConfig>>({
     type: 'line',
     colorScheme: 'default',
     lineStyle: 'solid',
@@ -37,6 +44,12 @@ export function ChartConfigurator({ onConfigGenerated, initialConfig }: ChartCon
     projectionData: false,
     customColors: [],
     annotations: [],
+    animation: {
+      enabled: true,
+      preset: 'professional',
+      staggerElements: true,
+      reduceMotion: true,
+    },
     ...initialConfig
   });
 
@@ -49,8 +62,17 @@ export function ChartConfigurator({ onConfigGenerated, initialConfig }: ChartCon
     style: 'solid'
   });
 
-  const handleConfigChange = (field: keyof ChartTemplateConfig, value: any) => {
+  const handleConfigChange = (field: keyof ExtendedChartTemplateConfig, value: any) => {
     setConfig(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleAnimationChange = (animation: ChartAnimationConfig['animation']) => {
+    setConfig(prev => ({ ...prev, animation }));
+  };
+
+  const handleAnimationPreview = (preset: string) => {
+    // Trigger preview of animation preset
+    toast.info(`Voorbeeld van ${preset} animatie gestart`);
   };
 
   const addAnnotation = () => {
@@ -177,9 +199,13 @@ export function ChartConfigurator({ onConfigGenerated, initialConfig }: ChartCon
       </div>
 
       <Tabs defaultValue="basic" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="basic">Basis</TabsTrigger>
           <TabsTrigger value="visual">Visueel</TabsTrigger>
+          <TabsTrigger value="animations">
+            <Sparkle size={16} className="mr-1" />
+            Animaties
+          </TabsTrigger>
           <TabsTrigger value="data">Data</TabsTrigger>
           <TabsTrigger value="annotations">Annotaties</TabsTrigger>
           <TabsTrigger value="templates">Templates</TabsTrigger>
@@ -367,6 +393,18 @@ export function ChartConfigurator({ onConfigGenerated, initialConfig }: ChartCon
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Animation Configuration */}
+        <TabsContent value="animations" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <AnimationPresetSelector
+              value={config.animation}
+              onChange={handleAnimationChange}
+              onPreview={handleAnimationPreview}
+            />
+            <AnimationDemo />
+          </div>
         </TabsContent>
 
         {/* Data Configuration */}

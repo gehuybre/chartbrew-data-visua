@@ -1,5 +1,9 @@
-segment,responses
-Premium Klanten,340
-Standaard Klanten,890
-Nieuwe Klanten,156
-Enterprise,78
+demographic,count
+Man 18-30,187
+Vrouw 18-30,203
+Man 31-45,154
+Vrouw 31-45,178
+Man 46-60,142
+Vrouw 46-60,159
+Man 60+,98
+Vrouw 60+,126

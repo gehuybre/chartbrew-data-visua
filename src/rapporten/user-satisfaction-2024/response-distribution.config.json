@@ -1,0 +1,40 @@
+{
+  "id": "response-distribution",
+  "title": "Respons Verdeling per Demografische Groep",
+  "subtitle": "Percentage respondenten per leeftijdsgroep en geslacht",
+  "type": "pie",
+  "dataSource": "/src/rapporten/user-satisfaction-2024/response-distribution.csv",
+  "valueField": "count",
+  "labelField": "demographic",
+  "colors": {
+    "scheme": "smooth",
+    "palette": [
+      "oklch(0.45 0.15 240)",
+      "oklch(0.65 0.12 200)",
+      "oklch(0.55 0.08 250)",
+      "oklch(0.75 0.06 230)",
+      "oklch(0.35 0.12 220)",
+      "oklch(0.85 0.04 240)"
+    ]
+  },
+  "legend": {
+    "show": true,
+    "position": "right"
+  },
+  "animation": {
+    "enabled": true,
+    "preset": "smooth",
+    "staggerElements": true,
+    "customDuration": "1.5s",
+    "reduceMotion": true,
+    "chartType": "pie"
+  },
+  "footer": {
+    "text": "Totaal aantal respondenten: 1.247",
+    "source": "Demografische gegevens enquête 2024",
+    "notes": [
+      "Gegevens zijn gewogen naar de algemene populatieverdeling",
+      "Non-respons bias is gecorrigeerd door post-stratificatie"
+    ]
+  }
+}

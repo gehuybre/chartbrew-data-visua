@@ -1,5 +1,13 @@
-quarter,nps
-Q1 2024,42
-Q2 2024,47
-Q3 2024,52
-Q4 2024,55
+month,nps
+Jan,23
+Feb,27
+Mar,31
+Apr,28
+May,34
+Jun,38
+Jul,42
+Aug,39
+Sep,45
+Oct,48
+Nov,44
+Dec,47

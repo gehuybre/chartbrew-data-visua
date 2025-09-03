@@ -1,0 +1,50 @@
+{
+  "id": "satisfaction-scores",
+  "title": "Klanttevredenheidsscores per Categorie",
+  "subtitle": "Gemiddelde scores op een schaal van 1-10",
+  "type": "bar",
+  "dataSource": "/src/rapporten/user-satisfaction-2024/satisfaction-scores.csv",
+  "xAxis": {
+    "field": "category",
+    "label": "Categorieën"
+  },
+  "yAxis": {
+    "field": "score",
+    "label": "Tevredenheidsscore",
+    "format": ".1f"
+  },
+  "colors": {
+    "scheme": "professional",
+    "primary": "oklch(0.45 0.15 240)",
+    "secondary": "oklch(0.65 0.12 200)",
+    "highlight": "oklch(0.55 0.08 250)"
+  },
+  "bar": {
+    "spacing": 0.2,
+    "borderRadius": 4
+  },
+  "grid": {
+    "show": true,
+    "style": "solid",
+    "color": "oklch(0.88 0.01 240)"
+  },
+  "legend": {
+    "show": false
+  },
+  "animation": {
+    "enabled": true,
+    "preset": "professional",
+    "staggerElements": true,
+    "customDuration": "0.8s",
+    "reduceMotion": true,
+    "chartType": "bar"
+  },
+  "footer": {
+    "text": "Gebaseerd op 1.247 respondenten",
+    "source": "Klanttevredenheidsonderzoek 2024",
+    "notes": [
+      "Scores hoger dan 8,0 worden beschouwd als 'zeer tevreden'",
+      "Foutmarge: ±2,5% met 95% betrouwbaarheidsinterval"
+    ]
+  }
+}

@@ -30,6 +30,14 @@
 - **Flexibele styling opties**: Kleurpaletten, lijnstijlen, projecties, arceringen
 - **Chart types ondersteuning**: Lijn, bar, taart, area, scatter, radar en meer
 - **Download functionaliteit**: CSV export en iframe embed code
+- **Animation presets**: Zes themagerichte animatie-stijlen voor enhanced storytelling
+
+### Animation System
+- **Thematische presets**: Professional, Dynamic, Smooth, Playful, Minimal, Technical
+- **Chart-specifieke animaties**: Aangepaste bewegingen per chart type (bars, lines, pie)
+- **Staggered timing**: Elementen animeren individueel voor visuele flow
+- **Accessibility conscious**: Respecteert prefers-reduced-motion instellingen
+- **Performance optimized**: Hardware-accelerated CSS transforms en transitions
 
 ### Zoek & Navigatie
 - **Doorzoekbare rapporten**: Filter op titel, tags, auteur, content
@@ -75,6 +83,15 @@
 - **Kleur management**: Standaard paletten, highlight colors, custom kleuren
 - **Lijn styling**: Solid, dashed, dotted lijnen met configureerbare breedte
 - **Projecties**: Gestippelde toekomst projecties
+- **Animatie theming**: Zes voorgeprogrammeerde stijlen met aanpassingsopties
+
+### Animation Implementation
+- **CSS-first approach**: Hardware-accelerated transforms en transitions
+- **Theme-based presets**: Professional, Dynamic, Smooth, Playful, Minimal, Technical
+- **Staggered timing**: Elementen animeren met intelligent timing
+- **Chart type awareness**: Specifieke animaties voor bars, lines, pie charts
+- **Performance monitoring**: Automatic fallback voor oudere browsers
+- **Accessibility compliance**: Automatic respect voor prefers-reduced-motion
 - **Arceringen**: Patronen voor area charts
 - **Interactiviteit**: Tooltips, legends, grid styling
 
