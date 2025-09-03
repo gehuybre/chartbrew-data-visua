@@ -3,17 +3,14 @@ import { ChartConfig, colorPalettes } from '../types/chartConfig';
 import { loadChartConfig, loadCSVData } from '../data/reportLoader';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Download, Code, FileBarChart } from '@phosphor-icons/react';
+import { Download, Code } from '@phosphor-icons/react';
 import { toast } from 'sonner';
-import { useChartAnimation } from '../hooks/useChartAnimation';
-import { ChartTransitionManager, animationDurations, staggerDelays } from '../utils/chartTransitions';
-import { ChartAnimationConfig, initializeChartAnimations, applyAnimationPreset } from '../utils/chartAnimations';
 import * as d3 from 'd3';
 
 // Animation constants
-const ANIMATION_DURATION = animationDurations.slow;
-const STAGGER_DELAY = staggerDelays.bars;
-const HOVER_DURATION = animationDurations.fast;
+const ANIMATION_DURATION = 750;
+const STAGGER_DELAY = 50;
+const HOVER_DURATION = 200;
 
 interface ChartRendererProps {
   configPath: string;
@@ -24,36 +21,27 @@ interface ChartRendererProps {
 
 export function ChartRenderer({ configPath, width = 800, height = 400, className = '' }: ChartRendererProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [config, setConfig] = useState<ChartConfig | null>(null);
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Use animation hook for viewport-based animations
-  const { ref: containerRef, isVisible } = useChartAnimation({
-    threshold: 0.2,
-    delay: 200
-  });
-
-  // Get transition manager instance
-  const transitionManager = ChartTransitionManager.getInstance();
 
   useEffect(() => {
     loadChart();
-    
-    // Cleanup function
-    return () => {
-      if (config?.id) {
-        transitionManager.cleanup(config.id);
-      }
-    };
   }, [configPath]);
 
   useEffect(() => {
-    if (config && data.length > 0 && isVisible) {
+    console.log('useEffect triggered for chart rendering. Config:', !!config, 'Data length:', data.length);
+    if (config && data.length > 0) {
+      console.log('All conditions met, rendering chart...');
       renderChart(config, data);
+    } else {
+      console.log('Conditions not met:', { hasConfig: !!config, hasData: data.length > 0 });
     }
-  }, [config, data, width, height, isVisible]);
+  }, [config, data, width, height]);
+
+
 
   const loadChart = async () => {
     try {
@@ -69,7 +57,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       console.log('Loaded CSV data:', csvData);
       setData(csvData);
       
-      renderChart(chartConfig, csvData);
+      // Don't render immediately, wait for visibility
     } catch (err) {
       console.error('Error loading chart:', err);
       setError(err instanceof Error ? err.message : 'Failed to load chart');
@@ -79,54 +67,45 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
   };
 
   const renderChart = (config: ChartConfig, data: any[]) => {
-    if (!svgRef.current) return;
+    if (!svgRef.current) {
+      console.log('SVG ref not available yet');
+      return;
+    }
     
-    console.log('Rendering chart:', config.id, 'with data:', data);
+    console.log('Rendering chart:', config.id, 'with data:', data, 'data length:', data.length);
 
     const svg = d3.select(svgRef.current);
     
-    // Initialize animation system if animation config exists
-    const animationConfig = config as ChartAnimationConfig;
-    if (animationConfig.animation?.enabled && containerRef.current) {
-      initializeChartAnimations(containerRef.current, animationConfig);
-    }
-    
-    // Smooth transition for clearing existing chart
-    svg.selectAll('*')
-      .transition()
-      .duration(ANIMATION_DURATION / 2)
-      .style('opacity', 0)
-      .remove();
+    // Clear existing content
+    svg.selectAll('*').remove();
 
     const margin = { top: 40, right: 40, bottom: 60, left: 60 };
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
 
     const g = svg.append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`)
-      .style('opacity', 0);
-
-    // Animate main container in
-    g.transition()
-      .duration(ANIMATION_DURATION / 2)
-      .delay(ANIMATION_DURATION / 2)
-      .style('opacity', 1);
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
     // Get colors based on palette
     const colors = getChartColors(config.colors);
+    console.log('Using colors:', colors);
 
     try {
       switch (config.type) {
         case 'line':
+          console.log('Rendering line chart');
           renderLineChart(g, data, config, chartWidth, chartHeight, colors);
           break;
         case 'bar':
+          console.log('Rendering bar chart');
           renderBarChart(g, data, config, chartWidth, chartHeight, colors);
           break;
         case 'pie':
+          console.log('Rendering pie chart');
           renderPieChart(g, data, config, chartWidth, chartHeight, colors);
           break;
         case 'area':
+          console.log('Rendering area chart');
           renderAreaChart(g, data, config, chartWidth, chartHeight, colors);
           break;
         default:
@@ -141,8 +120,9 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
             .text(`Chart type "${config.type}" wordt nog niet ondersteund`);
       }
 
-      // Add title with fade-in animation
+      // Add title
       if (config.title) {
+        console.log('Adding title:', config.title);
         svg.append('text')
           .attr('x', width / 2)
           .attr('y', 25)
@@ -150,29 +130,22 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
           .style('font-size', '18px')
           .style('font-weight', '600')
           .style('fill', 'var(--foreground)')
-          .style('opacity', 0)
-          .text(config.title)
-          .transition()
-          .duration(ANIMATION_DURATION)
-          .delay(ANIMATION_DURATION / 3)
-          .style('opacity', 1);
+          .text(config.title);
       }
 
-      // Add subtitle with fade-in animation
+      // Add subtitle
       if (config.subtitle) {
+        console.log('Adding subtitle:', config.subtitle);
         svg.append('text')
           .attr('x', width / 2)
           .attr('y', 45)
           .attr('text-anchor', 'middle')
           .style('font-size', '14px')
           .style('fill', 'var(--muted-foreground)')
-          .style('opacity', 0)
-          .text(config.subtitle)
-          .transition()
-          .duration(ANIMATION_DURATION)
-          .delay(ANIMATION_DURATION / 2)
-          .style('opacity', 1);
+          .text(config.subtitle);
       }
+      
+      console.log('Chart rendering completed successfully');
     } catch (error) {
       console.error('Error rendering chart:', error);
       // Show error in chart
@@ -216,11 +189,10 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .nice()
       .range([height, 0]);
 
-    // Add grid if enabled with fade-in animation
-    // Add grid with animation classes
+    // Add grid if enabled
     if (config.grid?.show) {
       const xGrid = g.append('g')
-        .attr('class', 'grid chart-grid chart-grid-line')
+        .attr('class', 'grid')
         .attr('transform', `translate(0,${height})`);
       
       xGrid.call(d3.axisBottom(xScale).tickSize(-height).tickFormat(''))
@@ -228,16 +200,15 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .style('stroke', config.grid.color || 'var(--border)');
 
       const yGrid = g.append('g')
-        .attr('class', 'grid chart-grid chart-grid-line');
+        .attr('class', 'grid');
       
       yGrid.call(d3.axisLeft(yScale).tickSize(-width).tickFormat(''))
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
         .style('stroke', config.grid.color || 'var(--border)');
     }
 
-    // Add axes with animation classes
+    // Add axes
     const xAxis = g.append('g')
-      .attr('class', 'chart-axis')
       .attr('transform', `translate(0,${height})`);
     
     xAxis.call(d3.axisBottom(xScale))
@@ -245,15 +216,14 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .style('font-size', '12px')
       .style('fill', 'var(--foreground)');
 
-    const yAxis = g.append('g')
-      .attr('class', 'chart-axis');
+    const yAxis = g.append('g');
     
     yAxis.call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')))
       .selectAll('text')
       .style('font-size', '12px')
       .style('fill', 'var(--foreground)');
 
-    // Add axis labels with fade-in
+    // Add axis labels
     if (config.xAxis.label) {
       g.append('text')
         .attr('x', width / 2)
@@ -261,12 +231,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .style('text-anchor', 'middle')
         .style('font-size', '14px')
         .style('fill', 'var(--foreground)')
-        .style('opacity', 0)
-        .text(config.xAxis.label)
-        .transition()
-        .duration(ANIMATION_DURATION)
-        .delay(ANIMATION_DURATION / 2)
-        .style('opacity', 1);
+        .text(config.xAxis.label);
     }
 
     if (config.yAxis.label) {
@@ -277,12 +242,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .style('text-anchor', 'middle')
         .style('font-size', '14px')
         .style('fill', 'var(--foreground)')
-        .style('opacity', 0)
-        .text(config.yAxis.label)
-        .transition()
-        .duration(ANIMATION_DURATION)
-        .delay(ANIMATION_DURATION / 2)
-        .style('opacity', 1);
+        .text(config.yAxis.label);
     }
 
     // Create line path
@@ -294,65 +254,60 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       line.curve(d3.curveCardinal);
     }
 
-    // Add line with animation classes
+    // Add line with simple animation
     const path = g.append('path')
       .datum(data)
-      .attr('class', 'chart-line chart-path')
+      .attr('class', 'chart-line')
       .attr('fill', 'none')
       .attr('stroke', colors[0])
       .attr('stroke-width', config.lines?.width || 2)
       .attr('stroke-dasharray', config.lines?.style === 'dashed' ? '5,5' : 'none')
       .attr('d', line);
 
-    // Use transition manager for line animation
-    transitionManager.animateLinePath(
-      path, 
-      config.lines?.style === 'dashed',
-      {
-        duration: ANIMATION_DURATION * 1.5,
-        delay: ANIMATION_DURATION / 2
-      }
-    );
+    // Simple line drawing animation
+    const totalLength = path.node()?.getTotalLength() || 0;
+    path
+      .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+      .attr('stroke-dashoffset', totalLength)
+      .transition()
+      .duration(ANIMATION_DURATION)
+      .ease(d3.easeLinear)
+      .attr('stroke-dashoffset', 0)
+      .on('end', function() {
+        if (config.lines?.style !== 'dashed') {
+          d3.select(this).attr('stroke-dasharray', null);
+        } else {
+          d3.select(this).attr('stroke-dasharray', '5,5');
+        }
+      });
 
-    // Add dots with animation classes
+    // Add dots
     const dots = g.selectAll('.dot')
       .data(data)
       .enter().append('circle')
-      .attr('class', 'dot chart-data-element chart-dot')
+      .attr('class', 'dot')
       .attr('cx', (d: any) => xScale(String(d[config.xAxis!.field]))! + xScale.bandwidth() / 2)
       .attr('cy', (d: any) => yScale(Number(d[config.yAxis!.field])))
-      .attr('fill', colors[0]);
+      .attr('r', 0)
+      .attr('fill', colors[0])
+      .transition()
+      .duration(300)
+      .delay((d, i) => ANIMATION_DURATION + i * 100)
+      .attr('r', 4);
 
-    // Apply animation presets to each dot
-    const animationConfig = config as ChartAnimationConfig;
-    if (animationConfig.animation?.enabled && animationConfig.animation.preset) {
-      dots.each(function(d, i) {
-        applyAnimationPreset(this as HTMLElement, animationConfig.animation!.preset!, 'line', i + 1);
-      });
-    }
-
-    // Use transition manager for dots animation
-    transitionManager.animateDots(dots, {
-      duration: animationDurations.normal,
-      stagger: staggerDelays.dots,
-      delay: ANIMATION_DURATION
-    });
-
-    // Add hover interactions with smooth transitions
-    dots
+    // Add hover interactions
+    g.selectAll('.dot')
       .on('mouseover', function(event, d) {
         d3.select(this)
           .transition()
           .duration(HOVER_DURATION)
-          .attr('r', 6)
-          .style('opacity', 1);
+          .attr('r', 6);
       })
       .on('mouseout', function(event, d) {
         d3.select(this)
           .transition()
           .duration(HOVER_DURATION)
-          .attr('r', 4)
-          .style('opacity', 0.8);
+          .attr('r', 4);
       });
   };
 
@@ -375,10 +330,10 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .nice()
       .range([height, 0]);
 
-    // Add grid with animation classes
+    // Add grid if enabled
     if (config.grid?.show) {
       const xGrid = g.append('g')
-        .attr('class', 'grid chart-grid chart-grid-line')
+        .attr('class', 'grid')
         .attr('transform', `translate(0,${height})`);
       
       xGrid.call(d3.axisBottom(xScale).tickSize(-height).tickFormat(''))
@@ -386,16 +341,15 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .style('stroke', config.grid.color || 'var(--border)');
 
       const yGrid = g.append('g')
-        .attr('class', 'grid chart-grid chart-grid-line');
+        .attr('class', 'grid');
       
       yGrid.call(d3.axisLeft(yScale).tickSize(-width).tickFormat(''))
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
         .style('stroke', config.grid.color || 'var(--border)');
     }
 
-    // Add axes with animation classes
+    // Add axes
     const xAxis = g.append('g')
-      .attr('class', 'chart-axis')
       .attr('transform', `translate(0,${height})`);
     
     xAxis.call(d3.axisBottom(xScale))
@@ -407,20 +361,14 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .attr('dy', '.15em')
       .attr('transform', `rotate(${config.xAxis.rotation || -45})`);
 
-    const yAxis = g.append('g')
-      .style('opacity', 0);
-    
-    yAxis.transition()
-      .duration(ANIMATION_DURATION)
-      .delay(ANIMATION_DURATION / 3)
-      .style('opacity', 1);
+    const yAxis = g.append('g');
     
     yAxis.call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')))
       .selectAll('text')
       .style('font-size', '12px')
       .style('fill', 'var(--foreground)');
 
-    // Add axis labels with fade-in
+    // Add axis labels
     if (config.xAxis.label) {
       g.append('text')
         .attr('x', width / 2)
@@ -428,12 +376,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .style('text-anchor', 'middle')
         .style('font-size', '14px')
         .style('fill', 'var(--foreground)')
-        .style('opacity', 0)
-        .text(config.xAxis.label)
-        .transition()
-        .duration(ANIMATION_DURATION)
-        .delay(ANIMATION_DURATION / 2)
-        .style('opacity', 1);
+        .text(config.xAxis.label);
     }
 
     if (config.yAxis.label) {
@@ -444,60 +387,39 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .style('text-anchor', 'middle')
         .style('font-size', '14px')
         .style('fill', 'var(--foreground)')
-        .style('opacity', 0)
-        .text(config.yAxis.label)
-        .transition()
-        .duration(ANIMATION_DURATION)
-        .delay(ANIMATION_DURATION / 2)
-        .style('opacity', 1);
+        .text(config.yAxis.label);
     }
 
-    // Add bars with animation classes
+    // Add bars with animation
     const bars = g.selectAll('.bar')
       .data(data)
       .enter().append('rect')
-      .attr('class', 'bar chart-data-element chart-bar')
+      .attr('class', 'bar')
       .attr('x', (d: any) => xScale(String(d[config.xAxis!.field]))!)
       .attr('width', xScale.bandwidth())
       .attr('fill', colors[0])
       .attr('rx', config.bar?.borderRadius || 0)
-      .style('opacity', 0.8);
+      .attr('y', height)
+      .attr('height', 0)
+      .transition()
+      .duration(ANIMATION_DURATION)
+      .delay((d, i) => i * STAGGER_DELAY)
+      .attr('y', (d: any) => yScale(Number(d[config.yAxis!.field])))
+      .attr('height', (d: any) => height - yScale(Number(d[config.yAxis!.field])));
 
-    // Apply animation presets to each bar
-    const animationConfig = config as ChartAnimationConfig;
-    if (animationConfig.animation?.enabled && animationConfig.animation.preset) {
-      bars.each(function(d, i) {
-        applyAnimationPreset(this as HTMLElement, animationConfig.animation!.preset!, 'bar', i + 1);
-      });
-    }
-
-    // Use transition manager for bar animation
-    transitionManager.animateBars(
-      bars,
-      yScale,
-      height,
-      config.yAxis!.field,
-      { 
-        duration: ANIMATION_DURATION,
-        stagger: staggerDelays.bars
-      }
-    );
-
-    // Add hover interactions with smooth transitions
-    bars
+    // Add hover interactions
+    g.selectAll('.bar')
       .on('mouseover', function(event, d) {
         d3.select(this)
           .transition()
           .duration(HOVER_DURATION)
-          .style('opacity', 1)
-          .attr('transform', 'scale(1.02)');
+          .style('opacity', 0.8);
       })
       .on('mouseout', function(event, d) {
         d3.select(this)
           .transition()
           .duration(HOVER_DURATION)
-          .style('opacity', 0.8)
-          .attr('transform', 'scale(1)');
+          .style('opacity', 1);
       });
   };
 
@@ -534,19 +456,23 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .enter().append('g')
       .attr('class', 'slice');
 
-    // Add slice paths
+    // Add slice paths with animation
     const paths = slices.append('path')
       .attr('fill', (_: any, i: number) => colors[i % colors.length])
-      .style('opacity', 0.9);
+      .style('opacity', 0)
+      .transition()
+      .duration(ANIMATION_DURATION)
+      .delay((d, i) => i * 100)
+      .style('opacity', 0.9)
+      .attrTween('d', function(d: any) {
+        const interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
+        return function(t) {
+          return arc(interpolate(t));
+        };
+      });
 
-    // Use transition manager for pie slice animation
-    transitionManager.animatePieSlices(paths, arc, {
-      duration: ANIMATION_DURATION,
-      stagger: staggerDelays.pieSlices
-    });
-
-    // Add hover interactions with smooth scaling
-    paths
+    // Add hover interactions
+    slices.selectAll('path')
       .on('mouseover', function(event, d) {
         d3.select(this)
           .transition()
@@ -562,7 +488,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
           .attr('transform', 'scale(1)');
       });
 
-    // Add labels with fade-in animation
+    // Add labels
     const labels = slices.append('text')
       .attr('transform', (d: any) => `translate(${arc.centroid(d)})`)
       .attr('text-anchor', 'middle')
@@ -574,24 +500,22 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .text((d: any) => {
         const percentage = ((d.data[valueField] / d3.sum(data, d => d[valueField])) * 100).toFixed(1);
         return percentage > 5 ? `${percentage}%` : ''; // Only show label if slice is big enough
-      });
-
-    // Animate labels appearing
-    labels.transition()
-      .duration(ANIMATION_DURATION / 2)
+      })
+      .transition()
+      .duration(300)
       .delay(ANIMATION_DURATION)
       .style('opacity', 1);
 
-    // Add legend with animation classes
+    // Add legend if configured
     if (config.legend?.show && config.legend.position === 'right') {
       const legend = g.append('g')
-        .attr('class', 'legend chart-legend')
+        .attr('class', 'legend')
         .attr('transform', `translate(${radius + 30}, ${-radius})`);
 
       const legendItems = legend.selectAll('.legend-item')
         .data(pieData)
         .enter().append('g')
-        .attr('class', 'legend-item chart-legend-item')
+        .attr('class', 'legend-item')
         .attr('transform', (d, i) => `translate(0, ${i * 25})`);
 
       legendItems.append('rect')
@@ -622,26 +546,13 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .nice()
       .range([height, 0]);
 
-    // Add axes with slide-in animation
+    // Add axes
     const xAxis = g.append('g')
-      .attr('transform', `translate(0,${height})`)
-      .style('opacity', 0);
-    
-    xAxis.transition()
-      .duration(ANIMATION_DURATION)
-      .delay(ANIMATION_DURATION / 3)
-      .style('opacity', 1);
+      .attr('transform', `translate(0,${height})`);
     
     xAxis.call(d3.axisBottom(xScale));
 
-    const yAxis = g.append('g')
-      .style('opacity', 0);
-    
-    yAxis.transition()
-      .duration(ANIMATION_DURATION)
-      .delay(ANIMATION_DURATION / 3)
-      .style('opacity', 1);
-    
+    const yAxis = g.append('g');
     yAxis.call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')));
 
     // Create area path
@@ -650,30 +561,29 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .y0(height)
       .y1(d => yScale(d[config.yAxis!.field]));
 
-    // Add area with animation from bottom
+    // Add area with animation
     const areaPath = g.append('path')
       .datum(data)
       .attr('fill', colors[0])
-      .attr('fill-opacity', config.areas?.opacity || 0.7)
-      .attr('d', area);
+      .attr('fill-opacity', config.areas?.opacity || 0.7);
 
-    // Animate area growing from bottom
+    // Simple area animation using clip path
     const clipPath = g.append('defs')
       .append('clipPath')
       .attr('id', `area-clip-${config.id}`)
       .append('rect')
-      .attr('width', width)
-      .attr('height', 0)
-      .attr('y', height);
-
-    areaPath.attr('clip-path', `url(#area-clip-${config.id})`);
-
-    clipPath.transition()
-      .duration(ANIMATION_DURATION)
-      .delay(ANIMATION_DURATION / 2)
-      .ease(d3.easeQuadOut)
+      .attr('width', 0)
       .attr('height', height)
       .attr('y', 0);
+
+    areaPath
+      .attr('clip-path', `url(#area-clip-${config.id})`)
+      .attr('d', area);
+
+    clipPath
+      .transition()
+      .duration(ANIMATION_DURATION)
+      .attr('width', width);
   };
 
   const downloadCSV = () => {
@@ -730,7 +640,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
   return (
     <div ref={containerRef} className={`chart-container ${className}`}>
-      <Card className={`p-6 ${isVisible ? 'animate-in' : 'opacity-0'}`}>
+      <Card className="p-6">
         <div className="chart-container">
           <svg
             ref={svgRef}
