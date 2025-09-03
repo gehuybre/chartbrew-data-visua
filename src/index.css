@@ -312,6 +312,249 @@
   margin: 3rem 0;
 }
 
+/* Chart Animation Styles */
+.chart-container {
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--card);
+  transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Chart SVG Animations */
+.chart-container svg {
+  transition: opacity 0.5s ease;
+}
+
+.chart-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.chart-error {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+  animation: chartError 0.3s ease;
+}
+
+@keyframes chartError {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Chart Element Animations */
+.chart-axis {
+  transition: opacity 0.5s ease;
+}
+
+.chart-grid {
+  transition: opacity 0.3s ease;
+}
+
+.chart-data-element {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chart-data-element:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}
+
+/* Chart Tooltip Styles */
+.chart-tooltip {
+  position: absolute;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
+}
+
+.chart-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Chart Loading Animation */
+.chart-loading-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--muted);
+  border-radius: 50%;
+  border-top-color: var(--primary);
+  animation: chartSpin 1s ease-in-out infinite;
+}
+
+@keyframes chartSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Chart Button Animations */
+.chart-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+}
+
+.chart-container:hover .chart-action-buttons {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Chart Data Animation Classes */
+.chart-bar-animate {
+  animation: chartBarGrow 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes chartBarGrow {
+  0% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+}
+
+.chart-line-animate {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: chartLineDraw 1.5s ease forwards;
+}
+
+@keyframes chartLineDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.chart-dot-animate {
+  opacity: 0;
+  transform: scale(0);
+  animation: chartDotAppear 0.4s ease forwards;
+}
+
+@keyframes chartDotAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.chart-pie-slice-animate {
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: center;
+  animation: chartPieSliceGrow 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes chartPieSliceGrow {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-90deg);
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Chart Responsive Animations */
+@media (prefers-reduced-motion: reduce) {
+  .chart-container,
+  .chart-data-element,
+  .chart-tooltip,
+  .chart-action-buttons {
+    transition: none;
+    animation: none;
+  }
+  
+  .chart-bar-animate,
+  .chart-line-animate,
+  .chart-dot-animate,
+  .chart-pie-slice-animate {
+    animation: none;
+  }
+}
+
+/* Chart Focus and Accessibility */
+.chart-container:focus-within {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.chart-data-element:focus {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+
+/* Chart Legend Animations */
+.chart-legend {
+  opacity: 0;
+  transform: translateX(20px);
+  animation: chartLegendSlideIn 0.5s ease forwards;
+  animation-delay: 1s;
+}
+
+@keyframes chartLegendSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.chart-legend-item {
+  opacity: 0;
+  animation: chartLegendItemFadeIn 0.3s ease forwards;
+}
+
+@keyframes chartLegendItemFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Chart Grid Animation */
+.chart-grid-line {
+  opacity: 0;
+  animation: chartGridFadeIn 0.4s ease forwards;
+  animation-delay: 0.2s;
+}
+
+@keyframes chartGridFadeIn {
+  to {
+    opacity: 0.3;
+  }
+}
+
 .section-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -635,6 +878,67 @@
 
 .template-animate-in {
   animation: templateSlideIn 0.3s ease-out;
+}
+
+/* Chart Animation Keyframes */
+@keyframes chartFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes chartSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes chartSlideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes chartScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation: chartFadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-slide-left {
+  animation: chartSlideInLeft 0.5s ease-out;
+}
+
+.animate-slide-right {
+  animation: chartSlideInRight 0.5s ease-out;
+}
+
+.animate-scale-in {
+  animation: chartScaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Print styles for generated reports */
