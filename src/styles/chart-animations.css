@@ -1,320 +1,14 @@
-/* Chart Animation Presets for Different Themes */
+/* D3 Chart Specific Animations */
 
-/* ============================
-   THEME: Professional/Corporate
-   ============================ */
-.chart-theme-professional .chart-container {
-  animation: professionalEntrance 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+/* SVG Animation Classes */
+.chart-animate-in {
+  animation: chartFadeIn 0.8s ease-out;
 }
 
-.chart-theme-professional .chart-data-element {
-  animation: professionalDataReveal 0.6s ease-out forwards;
-  animation-fill-mode: both;
-}
-
-.chart-theme-professional .chart-axis {
-  animation: professionalAxisDraw 1s ease-out forwards;
-  animation-delay: 0.2s;
-}
-
-.chart-theme-professional .chart-legend {
-  animation: professionalLegendSlide 0.5s ease-out forwards;
-  animation-delay: 0.8s;
-}
-
-@keyframes professionalEntrance {
+@keyframes chartFadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes professionalDataReveal {
-  from {
-    opacity: 0;
-    transform: scaleY(0);
-    transform-origin: bottom;
-  }
-  to {
-    opacity: 1;
-    transform: scaleY(1);
-    transform-origin: bottom;
-  }
-}
-
-@keyframes professionalAxisDraw {
-  from {
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-  }
-  to {
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes professionalLegendSlide {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* ============================
-   THEME: Dynamic/Energetic
-   ============================ */
-.chart-theme-dynamic .chart-container {
-  animation: dynamicBounceIn 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-.chart-theme-dynamic .chart-data-element {
-  animation: dynamicPulseGrow 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-  animation-fill-mode: both;
-}
-
-.chart-theme-dynamic .chart-data-element:nth-child(odd) {
-  animation-delay: 0.1s;
-}
-
-.chart-theme-dynamic .chart-data-element:nth-child(even) {
-  animation-delay: 0.2s;
-}
-
-.chart-theme-dynamic .chart-title {
-  animation: dynamicTitleBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-  animation-delay: 0.5s;
-}
-
-@keyframes dynamicBounceIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.3) rotate(-5deg);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05) rotate(2deg);
-  }
-  70% {
-    transform: scale(0.9) rotate(-1deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-}
-
-@keyframes dynamicPulseGrow {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.2);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes dynamicTitleBounce {
-  0% {
-    opacity: 0;
-    transform: translateY(-30px) scale(0.8);
-  }
-  60% {
-    opacity: 0.8;
-    transform: translateY(5px) scale(1.1);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* ============================
-   THEME: Smooth/Elegant
-   ============================ */
-.chart-theme-smooth .chart-container {
-  animation: smoothFadeIn 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
-.chart-theme-smooth .chart-data-element {
-  animation: smoothWaveIn 1s ease-in-out forwards;
-  animation-fill-mode: both;
-}
-
-.chart-theme-smooth .chart-line {
-  animation: smoothLineDraw 2s ease-in-out forwards;
-}
-
-.chart-theme-smooth .chart-dot {
-  animation: smoothDotAppear 0.6s ease-out forwards;
-  animation-fill-mode: both;
-}
-
-@keyframes smoothFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-    filter: blur(2px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-@keyframes smoothWaveIn {
-  from {
-    opacity: 0;
-    transform: scaleX(0) translateX(-50%);
-    transform-origin: left center;
-  }
-  to {
-    opacity: 1;
-    transform: scaleX(1) translateX(0);
-    transform-origin: left center;
-  }
-}
-
-@keyframes smoothLineDraw {
-  from {
-    stroke-dasharray: 2000;
-    stroke-dashoffset: 2000;
-  }
-  to {
-    stroke-dasharray: 2000;
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes smoothDotAppear {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  80% {
-    opacity: 0.8;
-    transform: scale(1.1);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* ============================
-   THEME: Playful/Creative
-   ============================ */
-.chart-theme-playful .chart-container {
-  animation: playfulJump 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-.chart-theme-playful .chart-data-element {
-  animation: playfulBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-  animation-fill-mode: both;
-}
-
-.chart-theme-playful .chart-data-element:nth-child(1) { animation-delay: 0.1s; }
-.chart-theme-playful .chart-data-element:nth-child(2) { animation-delay: 0.2s; }
-.chart-theme-playful .chart-data-element:nth-child(3) { animation-delay: 0.3s; }
-.chart-theme-playful .chart-data-element:nth-child(4) { animation-delay: 0.4s; }
-.chart-theme-playful .chart-data-element:nth-child(5) { animation-delay: 0.5s; }
-
-.chart-theme-playful .chart-title {
-  animation: playfulWiggle 0.8s ease-in-out forwards;
-  animation-delay: 0.6s;
-}
-
-@keyframes playfulJump {
-  0% {
-    opacity: 0;
-    transform: translateY(100px) rotate(-10deg) scale(0.8);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translateY(-20px) rotate(5deg) scale(1.1);
-  }
-  75% {
-    transform: translateY(10px) rotate(-2deg) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) rotate(0deg) scale(1);
-  }
-}
-
-@keyframes playfulBounce {
-  0% {
-    opacity: 0;
-    transform: scale(0) rotate(-180deg);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.3) rotate(-90deg);
-  }
-  75% {
-    transform: scale(0.9) rotate(-30deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-}
-
-@keyframes playfulWiggle {
-  0%, 100% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(1deg);
-  }
-  75% {
-    transform: rotate(-1deg);
-  }
-}
-
-/* ============================
-   THEME: Minimal/Clean
-   ============================ */
-.chart-theme-minimal .chart-container {
-  animation: minimalAppear 0.6s ease-out forwards;
-}
-
-.chart-theme-minimal .chart-data-element {
-  animation: minimalSlideUp 0.4s ease-out forwards;
-  animation-fill-mode: both;
-}
-
-.chart-theme-minimal .chart-grid-line {
-  animation: minimalGridFade 0.8s ease-out forwards;
-  animation-delay: 0.2s;
-}
-
-@keyframes minimalAppear {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes minimalSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -322,343 +16,73 @@
   }
 }
 
-@keyframes minimalGridFade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 0.2;
-  }
+/* Chart Loading States */
+.chart-loading .chart-container {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
-/* ============================
-   THEME: Data-focused/Technical
-   ============================ */
-.chart-theme-technical .chart-container {
-  animation: technicalSystemBoot 1s ease-out forwards;
+.chart-error {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
 }
 
-.chart-theme-technical .chart-data-element {
-  animation: technicalDataLoad 0.6s ease-out forwards;
-  animation-fill-mode: both;
+/* D3 Specific Element Styles */
+.chart-container svg {
+  font-family: 'Inter', sans-serif;
 }
 
-.chart-theme-technical .chart-axis {
-  animation: technicalGridConstruct 0.8s ease-out forwards;
-  animation-delay: 0.1s;
+.chart-container .tick text {
+  fill: var(--muted-foreground);
+  font-size: 12px;
 }
 
-.chart-theme-technical .chart-label {
-  animation: technicalTextType 0.4s ease-out forwards;
-  animation-fill-mode: both;
+.chart-container .domain {
+  stroke: var(--border);
 }
 
-@keyframes technicalSystemBoot {
-  0% {
-    opacity: 0;
-    transform: scaleY(0);
-    transform-origin: center bottom;
-  }
-  50% {
-    opacity: 0.5;
-    transform: scaleY(0.5);
-  }
-  100% {
-    opacity: 1;
-    transform: scaleY(1);
-  }
+.chart-container .grid line {
+  stroke: var(--border);
+  stroke-opacity: 0.3;
 }
 
-@keyframes technicalDataLoad {
-  0% {
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: left center;
-  }
-  70% {
-    opacity: 0.8;
-    transform: scaleX(1.02);
-  }
-  100% {
-    opacity: 1;
-    transform: scaleX(1);
-  }
+.chart-container .grid path {
+  stroke-width: 0;
 }
 
-@keyframes technicalGridConstruct {
-  from {
-    stroke-dasharray: 5, 5;
-    stroke-dashoffset: 10;
-    opacity: 0;
-  }
-  to {
-    stroke-dasharray: 5, 5;
-    stroke-dashoffset: 0;
-    opacity: 0.3;
-  }
+/* Chart interaction styles */
+.chart-container .dot:hover {
+  stroke: var(--background);
+  stroke-width: 2px;
+  cursor: pointer;
 }
 
-@keyframes technicalTextType {
-  from {
-    opacity: 0;
-    transform: translateX(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* ============================
-   INTERACTION ANIMATIONS
-   ============================ */
-
-/* Hover effects for all themes */
-.chart-data-element {
-  transition: all 0.2s ease;
-}
-
-.chart-theme-professional .chart-data-element:hover {
-  transform: scale(1.05);
-  filter: brightness(1.1);
-}
-
-.chart-theme-dynamic .chart-data-element:hover {
-  transform: scale(1.1) rotate(2deg);
-  filter: saturate(1.2);
-}
-
-.chart-theme-smooth .chart-data-element:hover {
-  transform: scale(1.03);
-  filter: blur(0) brightness(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.chart-theme-playful .chart-data-element:hover {
-  transform: scale(1.15) rotate(-5deg);
-  filter: hue-rotate(10deg);
-}
-
-.chart-theme-minimal .chart-data-element:hover {
-  transform: translateY(-2px);
+.chart-container .bar:hover {
   opacity: 0.8;
+  cursor: pointer;
 }
 
-.chart-theme-technical .chart-data-element:hover {
-  transform: scaleY(1.1);
-  filter: contrast(1.1);
-}
-
-/* ============================
-   CHART TYPE SPECIFIC ANIMATIONS
-   ============================ */
-
-/* Line Chart Animations */
-.chart-type-line .chart-theme-professional .chart-path {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: professionalLineDraw 1.5s ease-out forwards;
-}
-
-.chart-type-line .chart-theme-dynamic .chart-path {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: dynamicLinePulse 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-.chart-type-line .chart-theme-smooth .chart-path {
-  stroke-dasharray: 2000;
-  stroke-dashoffset: 2000;
-  animation: smoothLineDraw 2s ease-in-out forwards;
-}
-
-@keyframes professionalLineDraw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes dynamicLinePulse {
-  0% {
-    stroke-dashoffset: 1000;
-    stroke-width: 1px;
-  }
-  50% {
-    stroke-width: 4px;
-  }
-  100% {
-    stroke-dashoffset: 0;
-    stroke-width: 2px;
-  }
-}
-
-/* Bar Chart Animations */
-.chart-type-bar .chart-theme-professional .chart-bar {
-  transform: scaleY(0);
-  transform-origin: bottom;
-  animation: professionalBarGrow 0.8s ease-out forwards;
-}
-
-.chart-type-bar .chart-theme-dynamic .chart-bar {
-  transform: scale(0);
-  animation: dynamicBarExplode 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-.chart-type-bar .chart-theme-playful .chart-bar {
-  transform: rotate(-90deg) scale(0);
-  animation: playfulBarSpin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-@keyframes professionalBarGrow {
-  to {
-    transform: scaleY(1);
-  }
-}
-
-@keyframes dynamicBarExplode {
-  0% {
-    transform: scale(0) rotate(0deg);
-  }
-  50% {
-    transform: scale(1.2) rotate(180deg);
-  }
-  100% {
-    transform: scale(1) rotate(360deg);
-  }
-}
-
-@keyframes playfulBarSpin {
-  0% {
-    transform: rotate(-90deg) scale(0);
-  }
-  70% {
-    transform: rotate(10deg) scale(1.1);
-  }
-  100% {
-    transform: rotate(0deg) scale(1);
-  }
-}
-
-/* Pie Chart Animations */
-.chart-type-pie .chart-theme-professional .chart-slice {
-  transform: scale(0);
-  transform-origin: center;
-  animation: professionalSliceGrow 0.8s ease-out forwards;
-}
-
-.chart-type-pie .chart-theme-dynamic .chart-slice {
-  transform: scale(0) rotate(-90deg);
-  animation: dynamicSliceSpiral 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-.chart-type-pie .chart-theme-smooth .chart-slice {
-  opacity: 0;
-  transform: scale(0.8);
-  animation: smoothSliceFade 1s ease-in-out forwards;
-}
-
-@keyframes professionalSliceGrow {
-  to {
-    transform: scale(1);
-  }
-}
-
-@keyframes dynamicSliceSpiral {
-  0% {
-    transform: scale(0) rotate(-90deg);
-  }
-  50% {
-    transform: scale(1.1) rotate(45deg);
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-  }
-}
-
-@keyframes smoothSliceFade {
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* ============================
-   STAGGERED ANIMATIONS
-   ============================ */
-
-/* Data elements with staggered delays */
-.chart-stagger-delay-1 { animation-delay: 0.1s; }
-.chart-stagger-delay-2 { animation-delay: 0.2s; }
-.chart-stagger-delay-3 { animation-delay: 0.3s; }
-.chart-stagger-delay-4 { animation-delay: 0.4s; }
-.chart-stagger-delay-5 { animation-delay: 0.5s; }
-.chart-stagger-delay-6 { animation-delay: 0.6s; }
-.chart-stagger-delay-7 { animation-delay: 0.7s; }
-.chart-stagger-delay-8 { animation-delay: 0.8s; }
-
-/* ============================
-   RESPONSIVE CONSIDERATIONS
-   ============================ */
-
-@media (prefers-reduced-motion: reduce) {
-  .chart-theme-professional,
-  .chart-theme-dynamic,
-  .chart-theme-smooth,
-  .chart-theme-playful,
-  .chart-theme-minimal,
-  .chart-theme-technical {
-    animation: none !important;
-  }
-  
-  .chart-theme-professional *,
-  .chart-theme-dynamic *,
-  .chart-theme-smooth *,
-  .chart-theme-playful *,
-  .chart-theme-minimal *,
-  .chart-theme-technical * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
+/* Responsive chart behavior */
 @media (max-width: 768px) {
-  /* Reduce animation complexity on mobile */
-  .chart-theme-dynamic .chart-data-element,
-  .chart-theme-playful .chart-data-element {
-    animation-duration: 0.4s;
+  .chart-container svg {
+    font-size: 10px;
   }
   
-  .chart-theme-smooth .chart-line,
-  .chart-theme-professional .chart-axis {
-    animation-duration: 0.8s;
+  .chart-container .tick text {
+    font-size: 10px;
   }
 }
 
-/* ============================
-   UTILITY CLASSES
-   ============================ */
-
-.chart-animate-fast {
-  animation-duration: 0.3s !important;
-}
-
-.chart-animate-slow {
-  animation-duration: 2s !important;
-}
-
-.chart-animate-delay-short {
-  animation-delay: 0.1s !important;
-}
-
-.chart-animate-delay-long {
-  animation-delay: 1s !important;
-}
-
-.chart-no-animation {
-  animation: none !important;
-}
-
-.chart-no-animation * {
-  animation: none !important;
-  transition: none !important;
+/* Print styles */
+@media print {
+  .chart-container {
+    break-inside: avoid;
+  }
+  
+  .chart-action-buttons {
+    display: none;
+  }
 }

@@ -136,6 +136,63 @@ export async function loadChartConfig(configPath: string): Promise<ChartConfig> 
           notes: ['Alleen unieke paginaweergaven geteld']
         },
         animation: { duration: 1000, easing: 'ease-out', delay: 300 }
+      },
+      '/src/rapporten/sales-performance-h1/monthly-revenue.config.json': {
+        id: 'monthly-revenue',
+        type: 'line',
+        title: 'Maandelijkse Omzet H1 2024',
+        subtitle: 'Ontwikkeling van verkoopcijfers',
+        dataSource: '/src/rapporten/sales-performance-h1/monthly-revenue.csv',
+        xAxis: { field: 'month', label: 'Maand', type: 'category' },
+        yAxis: { field: 'revenue', label: 'Omzet (€)', type: 'linear', format: '€#,###' },
+        colors: { palette: 'highlight' },
+        lines: { style: 'solid', width: 3, smooth: true },
+        legend: { show: false, position: 'top' },
+        grid: { show: true, color: 'var(--border)', style: 'solid' },
+        tooltip: { show: true, format: '{month}: €{revenue:#,###}' },
+        footer: {
+          text: 'Exclusief BTW',
+          source: 'Sales Operations',
+          notes: ['Gebaseerd op gefactureerde omzet']
+        },
+        animation: { duration: 1500, easing: 'ease-out', delay: 200 }
+      },
+      '/src/rapporten/sales-performance-h1/regional-breakdown.config.json': {
+        id: 'regional-breakdown',
+        type: 'pie',
+        title: 'Regionale Omzetverdeling',
+        subtitle: 'Verkoop per regio H1 2024',
+        dataSource: '/src/rapporten/sales-performance-h1/regional-breakdown.csv',
+        colors: { palette: 'default' },
+        pie: { innerRadius: 0.3, sortByValue: true, padAngle: 0.02 },
+        legend: { show: true, position: 'right' },
+        tooltip: { show: true, format: '{region}: €{revenue:#,###} ({percentage:.1f}%)' },
+        footer: {
+          text: 'Totale omzet: €2.4M',
+          source: 'Sales Operations',
+          notes: ['Gebaseerd op klantlocatie']
+        },
+        animation: { duration: 1200, easing: 'ease-out', delay: 100 }
+      },
+      '/src/rapporten/sales-performance-h1/product-mix.config.json': {
+        id: 'product-mix',
+        type: 'bar',
+        title: 'Product Mix Analyse',
+        subtitle: 'Omzet per productcategorie',
+        dataSource: '/src/rapporten/sales-performance-h1/product-mix.csv',
+        xAxis: { field: 'category', label: 'Productcategorie', type: 'category' },
+        yAxis: { field: 'revenue', label: 'Omzet (€)', type: 'linear', format: '€#,###' },
+        colors: { palette: 'default' },
+        bar: { spacing: 0.2, borderRadius: 4 },
+        legend: { show: false, position: 'top' },
+        grid: { show: true, color: 'var(--border)', style: 'solid' },
+        tooltip: { show: true, format: '{category}: €{revenue:#,###}' },
+        footer: {
+          text: 'H1 2024 verkoopcijfers',
+          source: 'Sales Operations',
+          notes: ['Inclusief terugkerende abonnementen']
+        },
+        animation: { duration: 1000, easing: 'ease-out', delay: 150 }
       }
     };
     
@@ -200,6 +257,28 @@ export async function loadCSVData(csvPath: string): Promise<any[]> {
         { segment: 'Mid-market', count: 456, percentage: 36.6 },
         { segment: 'Small Business', count: 248, percentage: 19.9 },
         { segment: 'Nieuwe Klanten', count: 156, percentage: 12.5 }
+      ],
+      '/src/rapporten/sales-performance-h1/monthly-revenue.csv': [
+        { month: 'Januari', revenue: 180000 },
+        { month: 'Februari', revenue: 195000 },
+        { month: 'Maart', revenue: 220000 },
+        { month: 'April', revenue: 210000 },
+        { month: 'Mei', revenue: 235000 },
+        { month: 'Juni', revenue: 250000 }
+      ],
+      '/src/rapporten/sales-performance-h1/regional-breakdown.csv': [
+        { region: 'Nederland', revenue: 980000, percentage: 40.8 },
+        { region: 'België', revenue: 560000, percentage: 23.3 },
+        { region: 'Duitsland', revenue: 480000, percentage: 20.0 },
+        { region: 'Frankrijk', revenue: 240000, percentage: 10.0 },
+        { region: 'Overig EU', revenue: 140000, percentage: 5.8 }
+      ],
+      '/src/rapporten/sales-performance-h1/product-mix.csv': [
+        { category: 'Enterprise Software', revenue: 850000 },
+        { category: 'Consulting Services', revenue: 620000 },
+        { category: 'SaaS Subscriptions', revenue: 480000 },
+        { category: 'Training & Support', revenue: 280000 },
+        { category: 'Hardware', revenue: 170000 }
       ]
     };
     

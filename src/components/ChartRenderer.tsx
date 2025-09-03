@@ -73,6 +73,8 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     }
     
     console.log('Rendering chart:', config.id, 'with data:', data, 'data length:', data.length);
+    console.log('Chart type:', config.type);
+    console.log('Chart config:', config);
 
     const svg = d3.select(svgRef.current);
     
@@ -145,7 +147,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
           .text(config.subtitle);
       }
       
-      console.log('Chart rendering completed successfully');
+      console.log('Chart rendering completed successfully for:', config.id);
     } catch (error) {
       console.error('Error rendering chart:', error);
       // Show error in chart
@@ -178,7 +180,8 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
     console.log('Rendering line chart with:', { data, xField: config.xAxis.field, yField: config.yAxis.field });
 
-    const xScale = d3.scaleBand()
+    // For line charts, use point scale for X axis to position points correctly
+    const xScale = d3.scalePoint()
       .domain(data.map(d => String(d[config.xAxis!.field])))
       .range([0, width])
       .padding(0.1);
@@ -215,6 +218,9 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .selectAll('text')
       .style('font-size', '12px')
       .style('fill', 'var(--foreground)');
+      
+    xAxis.selectAll('path, line')
+      .style('stroke', 'var(--border)');
 
     const yAxis = g.append('g');
     
@@ -222,6 +228,9 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .selectAll('text')
       .style('font-size', '12px')
       .style('fill', 'var(--foreground)');
+      
+    yAxis.selectAll('path, line')
+      .style('stroke', 'var(--border)');
 
     // Add axis labels
     if (config.xAxis.label) {
@@ -247,7 +256,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
     // Create line path
     const line = d3.line<any>()
-      .x(d => xScale(String(d[config.xAxis!.field]))! + xScale.bandwidth() / 2)
+      .x(d => xScale(String(d[config.xAxis!.field]))!)
       .y(d => yScale(Number(d[config.yAxis!.field])));
 
     if (config.lines?.smooth) {
@@ -286,7 +295,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .data(data)
       .enter().append('circle')
       .attr('class', 'dot')
-      .attr('cx', (d: any) => xScale(String(d[config.xAxis!.field]))! + xScale.bandwidth() / 2)
+      .attr('cx', (d: any) => xScale(String(d[config.xAxis!.field]))!)
       .attr('cy', (d: any) => yScale(Number(d[config.yAxis!.field])))
       .attr('r', 0)
       .attr('fill', colors[0])
@@ -332,20 +341,16 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
     // Add grid if enabled
     if (config.grid?.show) {
-      const xGrid = g.append('g')
-        .attr('class', 'grid')
-        .attr('transform', `translate(0,${height})`);
-      
-      xGrid.call(d3.axisBottom(xScale).tickSize(-height).tickFormat(''))
-        .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
-        .style('stroke', config.grid.color || 'var(--border)');
-
       const yGrid = g.append('g')
         .attr('class', 'grid');
       
       yGrid.call(d3.axisLeft(yScale).tickSize(-width).tickFormat(''))
+        .selectAll('line')
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
-        .style('stroke', config.grid.color || 'var(--border)');
+        .style('stroke', config.grid.color || 'var(--border)')
+        .style('opacity', 0.3);
+        
+      yGrid.selectAll('path').style('opacity', 0);
     }
 
     // Add axes
@@ -360,6 +365,9 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .attr('dx', '-.8em')
       .attr('dy', '.15em')
       .attr('transform', `rotate(${config.xAxis.rotation || -45})`);
+      
+    xAxis.selectAll('path, line')
+      .style('stroke', 'var(--border)');
 
     const yAxis = g.append('g');
     
@@ -367,6 +375,9 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .selectAll('text')
       .style('font-size', '12px')
       .style('fill', 'var(--foreground)');
+      
+    yAxis.selectAll('path, line')
+      .style('stroke', 'var(--border)');
 
     // Add axis labels
     if (config.xAxis.label) {
@@ -437,8 +448,14 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
 
     console.log('Using fields:', { labelField, valueField });
 
+    // Transform data to ensure we have numeric values
+    const processedData = data.map(d => ({
+      ...d,
+      [valueField]: Number(d[valueField]) || 0
+    }));
+
     const pie = d3.pie<any>()
-      .value(d => Number(d[valueField]))
+      .value(d => d[valueField])
       .sort(config.pie?.sortByValue ? null : d3.ascending);
 
     const arc = d3.arc<any>()
@@ -447,7 +464,8 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .padAngle(config.pie?.padAngle || 0)
       .cornerRadius(config.pie?.cornerRadius || 0);
 
-    const pieData = pie(data);
+    const pieData = pie(processedData);
+    console.log('Pie data:', pieData);
 
     g.attr('transform', `translate(${centerX},${centerY})`);
 
@@ -462,25 +480,25 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .style('opacity', 0)
       .transition()
       .duration(ANIMATION_DURATION)
-      .delay((d, i) => i * 100)
+      .delay((d: any, i: number) => i * 100)
       .style('opacity', 0.9)
       .attrTween('d', function(d: any) {
         const interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
-        return function(t) {
+        return function(t: number) {
           return arc(interpolate(t));
         };
       });
 
     // Add hover interactions
     slices.selectAll('path')
-      .on('mouseover', function(event, d) {
+      .on('mouseover', function(event: any, d: any) {
         d3.select(this)
           .transition()
           .duration(HOVER_DURATION)
           .style('opacity', 1)
           .attr('transform', 'scale(1.05)');
       })
-      .on('mouseout', function(event, d) {
+      .on('mouseout', function(event: any, d: any) {
         d3.select(this)
           .transition()
           .duration(HOVER_DURATION)
@@ -488,7 +506,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
           .attr('transform', 'scale(1)');
       });
 
-    // Add labels
+    // Add labels if slices are big enough
     const labels = slices.append('text')
       .attr('transform', (d: any) => `translate(${arc.centroid(d)})`)
       .attr('text-anchor', 'middle')
@@ -498,7 +516,8 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .style('text-shadow', '0 1px 2px rgba(0,0,0,0.6)')
       .style('opacity', 0)
       .text((d: any) => {
-        const percentage = ((d.data[valueField] / d3.sum(data, d => d[valueField])) * 100).toFixed(1);
+        const total = d3.sum(processedData, (datum: any) => datum[valueField]);
+        const percentage = ((d.data[valueField] / total) * 100).toFixed(1);
         return percentage > 5 ? `${percentage}%` : ''; // Only show label if slice is big enough
       })
       .transition()
@@ -516,12 +535,12 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .data(pieData)
         .enter().append('g')
         .attr('class', 'legend-item')
-        .attr('transform', (d, i) => `translate(0, ${i * 25})`);
+        .attr('transform', (d: any, i: number) => `translate(0, ${i * 25})`);
 
       legendItems.append('rect')
         .attr('width', 18)
         .attr('height', 18)
-        .attr('fill', (d, i) => colors[i % colors.length]);
+        .attr('fill', (d: any, i: number) => colors[i % colors.length]);
 
       legendItems.append('text')
         .attr('x', 24)
@@ -536,13 +555,13 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
   const renderAreaChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
     if (!config.xAxis || !config.yAxis) return;
 
-    const xScale = d3.scaleBand()
-      .domain(data.map(d => d[config.xAxis!.field]))
+    const xScale = d3.scalePoint()
+      .domain(data.map(d => String(d[config.xAxis!.field])))
       .range([0, width])
       .padding(0.1);
 
     const yScale = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d[config.yAxis!.field]) as number])
+      .domain([0, d3.max(data, d => Number(d[config.yAxis!.field])) as number])
       .nice()
       .range([height, 0]);
 
@@ -550,16 +569,22 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     const xAxis = g.append('g')
       .attr('transform', `translate(0,${height})`);
     
-    xAxis.call(d3.axisBottom(xScale));
+    xAxis.call(d3.axisBottom(xScale))
+      .selectAll('text')
+      .style('font-size', '12px')
+      .style('fill', 'var(--foreground)');
 
     const yAxis = g.append('g');
-    yAxis.call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')));
+    yAxis.call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')))
+      .selectAll('text')
+      .style('font-size', '12px')
+      .style('fill', 'var(--foreground)');
 
     // Create area path
     const area = d3.area<any>()
-      .x(d => xScale(d[config.xAxis!.field])! + xScale.bandwidth() / 2)
+      .x(d => xScale(String(d[config.xAxis!.field]))!)
       .y0(height)
-      .y1(d => yScale(d[config.yAxis!.field]));
+      .y1(d => yScale(Number(d[config.yAxis!.field])));
 
     // Add area with animation
     const areaPath = g.append('path')
