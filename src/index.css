@@ -322,39 +322,342 @@
   font-size: 1.125rem;
 }
 
-/* Responsive Design */
+/* Template System Additional Styles */
+
+/* Template Builder Specific Styles */
+.template-builder .section-form {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.template-builder .section-preview {
+  background: var(--muted);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.template-builder .color-preview {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.template-builder .color-swatch {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.template-builder .color-swatch:hover {
+  transform: scale(1.1);
+}
+
+/* Chart Configurator Styles */
+.chart-configurator .config-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-configurator .annotation-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--muted);
+  border-radius: var(--radius);
+  margin-bottom: 0.5rem;
+}
+
+.chart-configurator .color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.chart-configurator .theme-preview {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Template Manager Styles */
+.template-manager .template-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.template-manager .template-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.template-manager .quick-action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.template-manager .action-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.template-manager .action-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Generated Report Preview Styles */
+.report-preview {
+  background: var(--muted);
+  border-radius: var(--radius);
+  padding: 1rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.report-preview .folder-structure {
+  color: var(--foreground);
+}
+
+.report-preview .file {
+  color: var(--muted-foreground);
+}
+
+.report-preview .folder {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* Form Enhancement Styles */
+.template-form .form-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.template-form .form-section h3 {
+  margin: 0 0 1rem 0;
+  color: var(--foreground);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.template-form .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.template-form .form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.template-form .form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Chart Type Preview Styles */
+.chart-type-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.chart-type-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chart-type-card:hover {
+  border-color: var(--primary);
+  background: var(--muted);
+}
+
+.chart-type-card.selected {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.chart-type-icon {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 0.5rem;
+  background: var(--muted);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Progress and Status Indicators */
+.template-progress {
+  background: var(--muted);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  margin: 1rem 0;
+}
+
+.template-progress-bar {
+  background: var(--primary);
+  height: 0.5rem;
+  border-radius: var(--radius);
+  transition: width 0.3s ease;
+}
+
+.template-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.template-status.success {
+  background: oklch(0.7 0.15 150);
+  color: oklch(0.15 0.15 150);
+}
+
+.template-status.warning {
+  background: oklch(0.8 0.12 60);
+  color: oklch(0.2 0.12 60);
+}
+
+.template-status.error {
+  background: oklch(0.8 0.15 30);
+  color: oklch(0.2 0.15 30);
+}
+
+/* Interactive Elements */
+.template-interactive {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.template-interactive:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.template-interactive:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design for Template System */
 @media (max-width: 768px) {
-  .scrolly-section .container {
-    padding: 0 1rem;
-  }
-  
-  .scrolly-section h1 {
-    font-size: 2rem;
-  }
-  
-  .scrolly-section h2 {
-    font-size: 1.5rem;
-  }
-  
-  .two-column-layout {
+  .template-form .form-grid,
+  .template-form .form-grid-2,
+  .template-form .form-grid-3 {
     grid-template-columns: 1fr;
-    gap: 2rem;
   }
   
-  .text-column, .chart-column {
+  .chart-type-preview {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .template-manager .quick-action-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chart-configurator .config-section {
+    padding: 1rem;
+  }
+  
+  .template-builder .section-form {
+    padding: 1rem;
+  }
+}
+
+/* Dark mode support for template system */
+@media (prefers-color-scheme: dark) {
+  .template-system {
+    --template-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .template-card:hover,
+  .action-card:hover {
+    box-shadow: var(--template-shadow);
+  }
+}
+
+/* Animation for template system */
+@keyframes templateSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.template-animate-in {
+  animation: templateSlideIn 0.3s ease-out;
+}
+
+/* Print styles for generated reports */
+@media print {
+  .template-manager,
+  .chart-configurator,
+  .template-builder {
+    display: none;
+  }
+  
+  .scrolly-report {
+    max-width: none;
+    margin: 0;
     padding: 0;
   }
   
-  .metrics-grid {
-    grid-template-columns: 1fr;
+  .scrolly-section {
+    page-break-inside: avoid;
+    margin: 2rem 0;
   }
   
-  .conversion-highlights {
-    grid-template-columns: 1fr;
-  }
-  
-  .big-number {
-    font-size: 2rem;
+  .chart-container {
+    page-break-inside: avoid;
   }
 }
 

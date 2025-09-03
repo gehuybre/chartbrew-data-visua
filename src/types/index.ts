@@ -27,6 +27,17 @@ export interface Report {
   sections: ScrollySection[]; // Structured scrolly sections
   thumbnail?: string;
   folderPath: string; // Required path to report folder
+  metadata?: ReportMetadata;
+  template?: string; // Template used to generate this report
+}
+
+export interface ReportMetadata {
+  version?: string;
+  lastUpdated?: string;
+  dataSource?: string;
+  confidentiality?: 'public' | 'internal' | 'confidential';
+  reviewedBy?: string;
+  approvedBy?: string;
 }
 
 export interface AppConfig {

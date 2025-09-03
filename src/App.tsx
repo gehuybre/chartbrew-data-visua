@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Toaster } from '@/components/ui/sonner';
+import { Button } from '@/components/ui/button';
 import { Report } from '@/types';
 import { ReportCard } from './components/ReportCard';
 import { ReportViewer } from './components/ReportViewer';
 import { SearchBar } from './components/SearchBar';
+import { TemplateManager } from './components/TemplateManager';
 import { loadAllReports } from './data/reportLoader';
-import { FileText, ChartLine } from '@phosphor-icons/react';
+import { FileText, ChartLine, Settings } from '@phosphor-icons/react';
 
 function App() {
   const [reports, setReports] = useState<Report[]>([]);
   const [filteredReports, setFilteredReports] = useState<Report[]>([]);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  const [showTemplateManager, setShowTemplateManager] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -38,6 +41,14 @@ function App() {
     setSelectedReport(null);
   };
 
+  const handleTemplateManagerOpen = () => {
+    setShowTemplateManager(true);
+  };
+
+  const handleTemplateManagerClose = () => {
+    setShowTemplateManager(false);
+  };
+
   if (isLoading) {
     return (
       <>
@@ -52,6 +63,15 @@ function App() {
             </p>
           </div>
         </div>
+        <Toaster />
+      </>
+    );
+  }
+
+  if (showTemplateManager) {
+    return (
+      <>
+        <TemplateManager onBack={handleTemplateManagerClose} />
         <Toaster />
       </>
     );
@@ -75,13 +95,23 @@ function App() {
         {/* Header */}
         <header className="border-b bg-card">
           <div className="max-w-6xl mx-auto px-6 py-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-primary text-primary-foreground rounded-lg">
-                <ChartLine size={24} />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary text-primary-foreground rounded-lg">
+                  <ChartLine size={24} />
+                </div>
+                <h1 className="font-inter font-bold text-3xl text-foreground">
+                  ChartBrew Rapporten
+                </h1>
               </div>
-              <h1 className="font-inter font-bold text-3xl text-foreground">
-                ChartBrew Rapporten
-              </h1>
+              <Button 
+                variant="outline" 
+                onClick={handleTemplateManagerOpen}
+                className="flex items-center gap-2"
+              >
+                <Settings size={16} />
+                Template Systeem
+              </Button>
             </div>
             <p className="text-lg text-muted-foreground leading-relaxed">
               Data-analyse en inzichten in uitgebreid leesformaat
