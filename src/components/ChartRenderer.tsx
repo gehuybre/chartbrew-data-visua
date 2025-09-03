@@ -849,7 +849,6 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
               preserveAspectRatio="xMidYMid meet"
             />
           </div>
-          </div>
           
           {config?.footer && (
             <div className="mt-4 text-sm text-muted-foreground space-y-1">
