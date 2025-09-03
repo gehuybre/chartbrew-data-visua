@@ -32,12 +32,22 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
   }, [configPath]);
 
   useEffect(() => {
-    console.log('useEffect triggered for chart rendering. Config:', !!config, 'Data length:', data.length);
+    console.log('ChartRenderer useEffect triggered');
+    console.log('Config exists:', !!config);
+    console.log('Data length:', data.length);
+    console.log('Config:', config);
+    console.log('Data:', data);
+    
     if (config && data.length > 0) {
       console.log('All conditions met, rendering chart...');
       renderChart(config, data);
     } else {
-      console.log('Conditions not met:', { hasConfig: !!config, hasData: data.length > 0 });
+      console.log('Conditions not met:', { 
+        hasConfig: !!config, 
+        hasData: data.length > 0,
+        configId: config?.id,
+        dataCount: data.length 
+      });
     }
   }, [config, data, width, height]);
 
@@ -72,14 +82,33 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       return;
     }
     
-    console.log('Rendering chart:', config.id, 'with data:', data, 'data length:', data.length);
+    console.log('=== CHART RENDERING START ===');
+    console.log('Chart ID:', config.id);
     console.log('Chart type:', config.type);
-    console.log('Chart config:', config);
+    console.log('Data:', data);
+    console.log('Data length:', data.length);
+    console.log('SVG element:', svgRef.current);
+    console.log('Config:', config);
 
     const svg = d3.select(svgRef.current);
+    console.log('D3 SVG selection:', svg);
+    console.log('SVG node:', svg.node());
+    console.log('SVG size:', svg.node() ? svg.node()!.getBoundingClientRect() : 'No node');
     
     // Clear existing content
     svg.selectAll('*').remove();
+    
+    // Test if D3 is working by adding a simple test element
+    const testGroup = svg.append('g')
+      .attr('transform', `translate(50, 50)`);
+    
+    testGroup.append('circle')
+      .attr('cx', 50)
+      .attr('cy', 50)
+      .attr('r', 10)
+      .attr('fill', 'red');
+      
+    console.log('Test circle added to verify D3 is working');
 
     const margin = { top: 40, right: 40, bottom: 60, left: 60 };
     const chartWidth = width - margin.left - margin.right;
@@ -91,6 +120,18 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     // Get colors based on palette
     const colors = getChartColors(config.colors);
     console.log('Using colors:', colors);
+    
+    // Add a background to verify the chart area
+    g.append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', chartWidth)
+      .attr('height', chartHeight)
+      .attr('fill', 'transparent')
+      .attr('stroke', '#888888')
+      .attr('stroke-dasharray', '2,2');
+      
+    console.log('Chart area background added');
 
     try {
       switch (config.type) {
@@ -118,7 +159,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
             .attr('y', chartHeight / 2)
             .attr('text-anchor', 'middle')
             .style('font-size', '16px')
-            .style('fill', 'var(--muted-foreground)')
+            .style('fill', '#6b7280')
             .text(`Chart type "${config.type}" wordt nog niet ondersteund`);
       }
 
@@ -131,7 +172,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
           .attr('text-anchor', 'middle')
           .style('font-size', '18px')
           .style('font-weight', '600')
-          .style('fill', 'var(--foreground)')
+          .style('fill', '#333333')
           .text(config.title);
       }
 
@@ -143,54 +184,93 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
           .attr('y', 45)
           .attr('text-anchor', 'middle')
           .style('font-size', '14px')
-          .style('fill', 'var(--muted-foreground)')
+          .style('fill', '#666666')
           .text(config.subtitle);
       }
       
-      console.log('Chart rendering completed successfully for:', config.id);
+      console.log('=== CHART RENDERING COMPLETED ===');
+      console.log('Chart ID:', config.id, 'rendered successfully');
     } catch (error) {
-      console.error('Error rendering chart:', error);
+      console.error('=== CHART RENDERING ERROR ===');
+      console.error('Chart ID:', config.id);
+      console.error('Error:', error);
+      console.error('Stack:', error instanceof Error ? error.stack : 'No stack trace');
+      
       // Show error in chart
       g.append('text')
         .attr('x', chartWidth / 2)
         .attr('y', chartHeight / 2)
         .attr('text-anchor', 'middle')
         .style('font-size', '16px')
-        .style('fill', 'var(--destructive)')
+        .style('fill', '#ef4444')
         .text('Fout bij renderen van grafiek');
     }
   };
 
   const getChartColors = (colorConfig: ChartConfig['colors']): string[] => {
+    // Use hardcoded colors for testing
+    const hardcodedColors = [
+      '#3b82f6', // blue
+      '#ef4444', // red  
+      '#10b981', // green
+      '#f59e0b', // yellow
+      '#8b5cf6', // purple
+      '#06b6d4', // cyan
+      '#f97316', // orange
+      '#84cc16'  // lime
+    ];
+    
     switch (colorConfig.palette) {
       case 'highlight':
-        return colorPalettes.highlight;
+        return ['#ef4444', '#f97316', '#f59e0b', '#84cc16'];
       case 'custom':
-        return colorConfig.customColors || colorPalettes.default;
+        return colorConfig.customColors || hardcodedColors;
       default:
-        return colorPalettes.default;
+        return hardcodedColors;
     }
   };
 
   const renderLineChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
+    console.log('=== LINE CHART RENDERING ===');
+    console.log('Data:', data);
+    console.log('Config:', config);
+    
     if (!config.xAxis || !config.yAxis) {
       console.error('Missing axis configuration for line chart');
+      console.error('xAxis:', config.xAxis);
+      console.error('yAxis:', config.yAxis);
       return;
     }
 
-    console.log('Rendering line chart with:', { data, xField: config.xAxis.field, yField: config.yAxis.field });
+    console.log('X field:', config.xAxis.field);
+    console.log('Y field:', config.yAxis.field);
 
     // For line charts, use point scale for X axis to position points correctly
     const xScale = d3.scalePoint()
-      .domain(data.map(d => String(d[config.xAxis!.field])))
+      .domain(data.map(d => {
+        const value = String(d[config.xAxis!.field]);
+        console.log('X value:', value);
+        return value;
+      }))
       .range([0, width])
       .padding(0.1);
 
-    const yExtent = d3.extent(data, d => Number(d[config.yAxis!.field])) as [number, number];
+    const yExtent = d3.extent(data, d => {
+      const value = Number(d[config.yAxis!.field]);
+      console.log('Y value:', value);
+      return value;
+    }) as [number, number];
+    
+    console.log('Y extent:', yExtent);
+    
     const yScale = d3.scaleLinear()
       .domain(yExtent)
       .nice()
       .range([height, 0]);
+
+    console.log('Scales created successfully');
+    console.log('X scale domain:', xScale.domain());
+    console.log('Y scale domain:', yScale.domain());
 
     // Add grid if enabled
     if (config.grid?.show) {
@@ -200,14 +280,14 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       
       xGrid.call(d3.axisBottom(xScale).tickSize(-height).tickFormat(''))
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
-        .style('stroke', config.grid.color || 'var(--border)');
+        .style('stroke', config.grid.color || '#d1d5db');
 
       const yGrid = g.append('g')
         .attr('class', 'grid');
       
       yGrid.call(d3.axisLeft(yScale).tickSize(-width).tickFormat(''))
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
-        .style('stroke', config.grid.color || 'var(--border)');
+        .style('stroke', config.grid.color || '#d1d5db');
     }
 
     // Add axes
@@ -217,20 +297,20 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     xAxis.call(d3.axisBottom(xScale))
       .selectAll('text')
       .style('font-size', '12px')
-      .style('fill', 'var(--foreground)');
+      .style('fill', '#374151');
       
     xAxis.selectAll('path, line')
-      .style('stroke', 'var(--border)');
+      .style('stroke', '#6b7280');
 
     const yAxis = g.append('g');
     
     yAxis.call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')))
       .selectAll('text')
       .style('font-size', '12px')
-      .style('fill', 'var(--foreground)');
+      .style('fill', '#374151');
       
     yAxis.selectAll('path, line')
-      .style('stroke', 'var(--border)');
+      .style('stroke', '#6b7280');
 
     // Add axis labels
     if (config.xAxis.label) {
@@ -239,7 +319,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .attr('y', height + 40)
         .style('text-anchor', 'middle')
         .style('font-size', '14px')
-        .style('fill', 'var(--foreground)')
+        .style('fill', '#374151')
         .text(config.xAxis.label);
     }
 
@@ -250,20 +330,31 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .attr('x', -height / 2)
         .style('text-anchor', 'middle')
         .style('font-size', '14px')
-        .style('fill', 'var(--foreground)')
+        .style('fill', '#374151')
         .text(config.yAxis.label);
     }
 
     // Create line path
+    console.log('Creating line path...');
+    
     const line = d3.line<any>()
-      .x(d => xScale(String(d[config.xAxis!.field]))!)
-      .y(d => yScale(Number(d[config.yAxis!.field])));
+      .x(d => {
+        const xPos = xScale(String(d[config.xAxis!.field]));
+        console.log('Line X position for', d[config.xAxis!.field], ':', xPos);
+        return xPos!;
+      })
+      .y(d => {
+        const yPos = yScale(Number(d[config.yAxis!.field]));
+        console.log('Line Y position for', d[config.yAxis!.field], ':', yPos);
+        return yPos;
+      });
 
     if (config.lines?.smooth) {
       line.curve(d3.curveCardinal);
     }
 
     // Add line with simple animation
+    console.log('Adding line to chart...');
     const path = g.append('path')
       .datum(data)
       .attr('class', 'chart-line')
@@ -273,8 +364,13 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .attr('stroke-dasharray', config.lines?.style === 'dashed' ? '5,5' : 'none')
       .attr('d', line);
 
+    console.log('Line path created:', path.node());
+
     // Simple line drawing animation
+    console.log('Starting line animation...');
     const totalLength = path.node()?.getTotalLength() || 0;
+    console.log('Line total length:', totalLength);
+    
     path
       .attr('stroke-dasharray', totalLength + ' ' + totalLength)
       .attr('stroke-dashoffset', totalLength)
@@ -291,6 +387,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       });
 
     // Add dots
+    console.log('Adding dots...');
     const dots = g.selectAll('.dot')
       .data(data)
       .enter().append('circle')
@@ -303,6 +400,8 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .duration(300)
       .delay((d, i) => ANIMATION_DURATION + i * 100)
       .attr('r', 4);
+
+    console.log('Line chart rendering completed');
 
     // Add hover interactions
     g.selectAll('.dot')
@@ -321,23 +420,47 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
   };
 
   const renderBarChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
+    console.log('=== BAR CHART RENDERING ===');
+    console.log('Data:', data);
+    console.log('Config:', config);
+    console.log('Width:', width, 'Height:', height);
+    console.log('Colors:', colors);
+    
     if (!config.xAxis || !config.yAxis) {
       console.error('Missing axis configuration for bar chart');
+      console.error('xAxis:', config.xAxis);
+      console.error('yAxis:', config.yAxis);
       return;
     }
 
-    console.log('Rendering bar chart with:', { data, xField: config.xAxis.field, yField: config.yAxis.field });
+    console.log('X field:', config.xAxis.field);
+    console.log('Y field:', config.yAxis.field);
 
     const xScale = d3.scaleBand()
-      .domain(data.map(d => String(d[config.xAxis!.field])))
+      .domain(data.map(d => {
+        const value = String(d[config.xAxis!.field]);
+        console.log('X value:', value);
+        return value;
+      }))
       .range([0, width])
       .padding(config.bar?.spacing || 0.1);
 
-    const yMax = d3.max(data, d => Number(d[config.yAxis!.field])) || 0;
+    const yMax = d3.max(data, d => {
+      const value = Number(d[config.yAxis!.field]);
+      console.log('Y value:', value);
+      return value;
+    }) || 0;
+    
+    console.log('Y max:', yMax);
+    
     const yScale = d3.scaleLinear()
       .domain([0, yMax])
       .nice()
       .range([height, 0]);
+
+    console.log('Scales created successfully');
+    console.log('X scale domain:', xScale.domain());
+    console.log('Y scale domain:', yScale.domain());
 
     // Add grid if enabled
     if (config.grid?.show) {
@@ -347,7 +470,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       yGrid.call(d3.axisLeft(yScale).tickSize(-width).tickFormat(''))
         .selectAll('line')
         .style('stroke-dasharray', config.grid.style === 'dashed' ? '3,3' : 'none')
-        .style('stroke', config.grid.color || 'var(--border)')
+        .style('stroke', config.grid.color || '#d1d5db')
         .style('opacity', 0.3);
         
       yGrid.selectAll('path').style('opacity', 0);
@@ -361,23 +484,23 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .selectAll('text')
       .style('text-anchor', 'end')
       .style('font-size', '12px')
-      .style('fill', 'var(--foreground)')
+      .style('fill', '#374151')
       .attr('dx', '-.8em')
       .attr('dy', '.15em')
       .attr('transform', `rotate(${config.xAxis.rotation || -45})`);
       
     xAxis.selectAll('path, line')
-      .style('stroke', 'var(--border)');
+      .style('stroke', '#6b7280');
 
     const yAxis = g.append('g');
     
     yAxis.call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')))
       .selectAll('text')
       .style('font-size', '12px')
-      .style('fill', 'var(--foreground)');
+      .style('fill', '#374151');
       
     yAxis.selectAll('path, line')
-      .style('stroke', 'var(--border)');
+      .style('stroke', '#6b7280');
 
     // Add axis labels
     if (config.xAxis.label) {
@@ -386,7 +509,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .attr('y', height + 50)
         .style('text-anchor', 'middle')
         .style('font-size', '14px')
-        .style('fill', 'var(--foreground)')
+        .style('fill', '#374151')
         .text(config.xAxis.label);
     }
 
@@ -397,26 +520,45 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .attr('x', -height / 2)
         .style('text-anchor', 'middle')
         .style('font-size', '14px')
-        .style('fill', 'var(--foreground)')
+        .style('fill', '#374151')
         .text(config.yAxis.label);
     }
 
     // Add bars with animation
+    console.log('Creating bars...');
+    
     const bars = g.selectAll('.bar')
       .data(data)
       .enter().append('rect')
       .attr('class', 'bar')
-      .attr('x', (d: any) => xScale(String(d[config.xAxis!.field]))!)
+      .attr('x', (d: any) => {
+        const xPos = xScale(String(d[config.xAxis!.field]));
+        console.log('Bar X position for', d[config.xAxis!.field], ':', xPos);
+        return xPos;
+      })
       .attr('width', xScale.bandwidth())
       .attr('fill', colors[0])
       .attr('rx', config.bar?.borderRadius || 0)
       .attr('y', height)
-      .attr('height', 0)
-      .transition()
+      .attr('height', 0);
+      
+    console.log('Bars created, starting animation...');
+    
+    bars.transition()
       .duration(ANIMATION_DURATION)
       .delay((d, i) => i * STAGGER_DELAY)
-      .attr('y', (d: any) => yScale(Number(d[config.yAxis!.field])))
-      .attr('height', (d: any) => height - yScale(Number(d[config.yAxis!.field])));
+      .attr('y', (d: any) => {
+        const yPos = yScale(Number(d[config.yAxis!.field]));
+        console.log('Bar Y position for', d[config.yAxis!.field], ':', yPos);
+        return yPos;
+      })
+      .attr('height', (d: any) => {
+        const barHeight = height - yScale(Number(d[config.yAxis!.field]));
+        console.log('Bar height for', d[config.yAxis!.field], ':', barHeight);
+        return barHeight;
+      });
+
+    console.log('Bar chart rendering completed');
 
     // Add hover interactions
     g.selectAll('.bar')
@@ -435,11 +577,15 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
   };
 
   const renderPieChart = (g: any, data: any[], config: ChartConfig, width: number, height: number, colors: string[]) => {
-    console.log('Rendering pie chart with data:', data);
+    console.log('=== PIE CHART RENDERING ===');
+    console.log('Data:', data);
+    console.log('Config:', config);
     
     const radius = Math.min(width, height) / 2 - 20; // Leave some margin
     const centerX = width / 2;
     const centerY = height / 2;
+
+    console.log('Radius:', radius, 'Center:', centerX, centerY);
 
     // For pie charts, we expect data with 'label' and 'value' fields, or use the first two fields
     const keys = Object.keys(data[0] || {});
@@ -447,15 +593,26 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     const valueField = keys[1];
 
     console.log('Using fields:', { labelField, valueField });
+    console.log('First data item:', data[0]);
 
     // Transform data to ensure we have numeric values
-    const processedData = data.map(d => ({
-      ...d,
-      [valueField]: Number(d[valueField]) || 0
-    }));
+    const processedData = data.map(d => {
+      const numericValue = Number(d[valueField]) || 0;
+      console.log('Processing:', d[labelField], '=', numericValue);
+      return {
+        ...d,
+        [valueField]: numericValue
+      };
+    });
+
+    console.log('Processed data:', processedData);
 
     const pie = d3.pie<any>()
-      .value(d => d[valueField])
+      .value(d => {
+        const value = d[valueField];
+        console.log('Pie value for', d[labelField], ':', value);
+        return value;
+      })
       .sort(config.pie?.sortByValue ? null : d3.ascending);
 
     const arc = d3.arc<any>()
@@ -474,20 +631,34 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
       .enter().append('g')
       .attr('class', 'slice');
 
+    console.log('Created', slices.size(), 'slices');
+
     // Add slice paths with animation
+    console.log('Adding slice paths...');
     const paths = slices.append('path')
-      .attr('fill', (_: any, i: number) => colors[i % colors.length])
-      .style('opacity', 0)
-      .transition()
+      .attr('fill', (_: any, i: number) => {
+        const color = colors[i % colors.length];
+        console.log('Slice', i, 'color:', color);
+        return color;
+      })
+      .style('opacity', 0);
+    
+    console.log('Starting slice animation...');
+    paths.transition()
       .duration(ANIMATION_DURATION)
       .delay((d: any, i: number) => i * 100)
       .style('opacity', 0.9)
       .attrTween('d', function(d: any) {
         const interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
         return function(t: number) {
-          return arc(interpolate(t));
+          const interpolatedData = interpolate(t);
+          const pathData = arc(interpolatedData);
+          console.log('Animation step', t, 'path:', pathData);
+          return pathData;
         };
       });
+
+    console.log('Pie chart rendering completed');
 
     // Add hover interactions
     slices.selectAll('path')
@@ -547,7 +718,7 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
         .attr('y', 9)
         .attr('dy', '0.35em')
         .style('font-size', '12px')
-        .style('fill', 'var(--foreground)')
+        .style('fill', '#374151')
         .text((d: any) => d.data[labelField]);
     }
   };
@@ -572,13 +743,13 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     xAxis.call(d3.axisBottom(xScale))
       .selectAll('text')
       .style('font-size', '12px')
-      .style('fill', 'var(--foreground)');
+      .style('fill', '#374151');
 
     const yAxis = g.append('g');
     yAxis.call(d3.axisLeft(yScale).tickFormat(d3.format(config.yAxis.format || '')))
       .selectAll('text')
       .style('font-size', '12px')
-      .style('fill', 'var(--foreground)');
+      .style('fill', '#374151');
 
     // Create area path
     const area = d3.area<any>()
@@ -667,13 +838,18 @@ export function ChartRenderer({ configPath, width = 800, height = 400, className
     <div ref={containerRef} className={`chart-container ${className}`}>
       <Card className="p-6">
         <div className="chart-container">
-          <svg
-            ref={svgRef}
-            width={width}
-            height={height}
-            className="w-full h-auto max-w-full"
-            style={{ display: 'block' }}
-          />
+          <div style={{ width: width, height: height }}>
+            <svg
+              ref={svgRef}
+              width={width}
+              height={height}
+              className="w-full h-full border border-border"
+              style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.05)' }}
+              viewBox={`0 0 ${width} ${height}`}
+              preserveAspectRatio="xMidYMid meet"
+            />
+          </div>
+          </div>
           
           {config?.footer && (
             <div className="mt-4 text-sm text-muted-foreground space-y-1">

@@ -3,6 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Scrollytelling } from './Scrollytelling';
 import { ChartRenderer } from './ChartRenderer';
+import { SimpleChartTest } from './SimpleChartTest';
+import { SimpleBarChart, testBarData, testLineData } from './SimpleBarChart';
+import { DirectChartTest } from './DirectChartTest';
 import { Report } from '@/types';
 import { ArrowLeft, CalendarDays, User } from '@phosphor-icons/react';
 
@@ -295,6 +298,12 @@ function Q3AnalyticsScrollyContent({ report }: { report: Report }) {
           </div>
           
           <div className="scrolly-chart-container">
+            <DirectChartTest />
+            
+            <SimpleBarChart data={testBarData} width={600} height={300} />
+            
+            <SimpleChartTest />
+            
             <ChartRenderer
               configPath="/src/rapporten/q3-2024-analytics/monthly-visitors.config.json"
               width={800}
