@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ChartViewer } from './ChartViewer';
-import { MarkdownRenderer } from './MarkdownRenderer';
+import { Scrollytelling } from './Scrollytelling';
+import { ChartRenderer } from './ChartRenderer';
 import { Report } from '@/types';
 import { ArrowLeft, CalendarDays, User } from '@phosphor-icons/react';
 
@@ -11,11 +12,227 @@ interface ReportViewerProps {
 }
 
 export function ReportViewer({ report, onBack }: ReportViewerProps) {
+  const [htmlContent, setHtmlContent] = useState<string>('');
+  const [visibleCharts, setVisibleCharts] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    loadReportContent();
+  }, [report]);
+
+  const loadReportContent = () => {
+    // For demo purposes, we'll use the mock HTML content
+    // In a real implementation, this would load from the actual content.html file
+    if (report.id === 'q3-2024-analytics') {
+      setHtmlContent(getQ3AnalyticsContent());
+    } else {
+      setHtmlContent(getDefaultContent());
+    }
+  };
+
+  const getQ3AnalyticsContent = () => {
+    return `
+      <div class="scrolly-report">
+        <section id="introduction" class="scrolly-section text-section">
+          <div class="container">
+            <h1>Q3 2024 Website Analytics Rapport</h1>
+            <p class="lead">
+              Onze Q3 2024 analytics tonen significante groei in alle belangrijke prestatie-indicatoren. 
+              Websiteverkeer steeg met <strong>37%</strong> vergeleken met Q2, met bijzonder sterke 
+              prestaties in organische zoekzichtbaarheid.
+            </p>
+            <div class="highlight-box">
+              <h3>Samenvatting van Resultaten</h3>
+              <ul class="key-metrics">
+                <li><span class="metric">37%</span> toename in websiteverkeer</li>
+                <li><span class="metric">21,180</span> unieke bezoekers in september</li>
+                <li><span class="metric">45%</span> van verkeer via organisch zoeken</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="traffic-growth" class="scrolly-section chart-section">
+          <div class="container">
+            <div class="section-header">
+              <h2>Verkeersgroei Doorheen Q3</h2>
+              <p>
+                Het derde kwartaal toonde uitzonderlijke groei in unieke bezoekers, waarbij 
+                september ons hoogste maandelijkse verkeer tot nu toe markeerde.
+              </p>
+            </div>
+            
+            <div class="scrolly-chart-container">
+              <div class="chart-placeholder" id="monthly-visitors-chart" data-chart="monthly-visitors"></div>
+            </div>
+            
+            <div class="analysis-text">
+              <h3>Groei Acceleratie</h3>
+              <p>
+                De maandelijkse groei toont een versnelling vanaf augustus, met een 
+                opmerkelijke sprong van <strong>18,350</strong> naar <strong>21,180</strong> 
+                unieke bezoekers tussen augustus en september.
+              </p>
+              
+              <h4>Deze groei kan worden toegeschreven aan:</h4>
+              <ul>
+                <li>Verbeterde SEO-strategie implementatie</li>
+                <li>Verbeterde contentmarketing-inspanningen</li>
+                <li>Strategische social media campagnes</li>
+                <li>Geoptimaliseerde gebruikerservaring op mobiele apparaten</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="page-performance" class="scrolly-section chart-text-section">
+          <div class="container">
+            <div class="section-header">
+              <h2>Pagina Prestatie Analyse</h2>
+              <p>Welke pagina's trekken de meeste aandacht van onze bezoekers?</p>
+            </div>
+            
+            <div class="chart-placeholder" id="page-performance-chart" data-chart="page-performance"></div>
+            
+            <div class="analysis-text">
+              <h3>Homepage Dominantie</h3>
+              <p>
+                Onze homepage blijft veruit de meest bezochte pagina met <strong>8,450 weergaven</strong>, 
+                wat de effectiviteit van onze landingspagina optimalisaties bevestigt.
+              </p>
+              
+              <h4>Belangrijke Bevindingen:</h4>
+              <ul>
+                <li><strong>Productcatalogus</strong> (6,200 weergaven) - Sterke commerciële interesse</li>
+                <li><strong>Blog</strong> (3,600 weergaven) - Content marketing succes</li>
+                <li><strong>Over Ons</strong> (4,100 weergaven) - Merkvertrouwen opbouw</li>
+                <li><strong>Contact</strong> (2,800 weergaven) - Goede lead generatie basis</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="recommendations" class="scrolly-section text-section">
+          <div class="container">
+            <h2>Aanbevelingen voor Q4</h2>
+            
+            <div class="recommendations-list">
+              <div class="recommendation">
+                <div class="rec-number">1</div>
+                <div class="rec-content">
+                  <h4>Inzetten op contentmarketing</h4>
+                  <p>Blogposts genereren significant organisch verkeer en moeten uitgebreid worden</p>
+                </div>
+              </div>
+              
+              <div class="recommendation">
+                <div class="rec-number">2</div>
+                <div class="rec-content">
+                  <h4>Mobiele ervaring optimaliseren</h4>
+                  <p>68% van het verkeer is nu mobiel - prioriteit voor UX verbeteringen</p>
+                </div>
+              </div>
+              
+              <div class="recommendation">
+                <div class="rec-number">3</div>
+                <div class="rec-content">
+                  <h4>Social media aanwezigheid uitbreiden</h4>
+                  <p>Vooral op platforms met hoogste betrokkenheid investeren</p>
+                </div>
+              </div>
+              
+              <div class="recommendation">
+                <div class="rec-number">4</div>
+                <div class="rec-content">
+                  <h4>A/B test checkout proces</h4>
+                  <p>Om conversiepercentages verder te verbeteren en weerstand weg te nemen</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    `;
+  };
+
+  const getDefaultContent = () => {
+    return `
+      <div class="scrolly-report">
+        <section class="scrolly-section text-section">
+          <div class="container">
+            <h1>${report.title}</h1>
+            <p class="lead">${report.description}</p>
+            
+            <div class="charts-section">
+              ${report.charts.map(chart => `
+                <div class="chart-container" style="margin: 3rem 0;">
+                  <div class="chart-placeholder" id="${chart.id}-chart" data-chart="${chart.id}"></div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </section>
+      </div>
+    `;
+  };
+
+  const handleChartVisible = (chartId: string) => {
+    setVisibleCharts(prev => new Set([...prev, chartId]));
+  };
+
+  // Replace chart placeholders with actual charts
+  useEffect(() => {
+    visibleCharts.forEach(chartId => {
+      const placeholder = document.getElementById(`${chartId}-chart`);
+      if (placeholder && !placeholder.dataset.rendered) {
+        placeholder.dataset.rendered = 'true';
+        placeholder.innerHTML = '';
+        placeholder.className = 'chart-rendered';
+        
+        // Find the chart config
+        const chart = report.charts.find(c => c.id === chartId);
+        if (chart) {
+          // Create a React component container
+          const chartContainer = document.createElement('div');
+          placeholder.appendChild(chartContainer);
+          
+          // We'll render the chart using a simpler method
+          placeholder.innerHTML = `
+            <div style="
+              background: var(--card);
+              border: 1px solid var(--border);
+              border-radius: 0.5rem;
+              padding: 1.5rem;
+              text-align: center;
+              min-height: 300px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-direction: column;
+            ">
+              <div style="
+                background: var(--primary);
+                color: var(--primary-foreground);
+                padding: 1rem;
+                border-radius: 0.25rem;
+                margin-bottom: 1rem;
+              ">
+                📊 Grafiek: ${chartId}
+              </div>
+              <p style="color: var(--muted-foreground); margin: 0;">
+                Grafiek wordt geladen met configuratie: ${chart.configPath}
+              </p>
+            </div>
+          `;
+        }
+      }
+    });
+  }, [visibleCharts, report.charts]);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b bg-card">
-        <div className="max-w-4xl mx-auto px-6 py-6">
+        <div className="max-w-6xl mx-auto px-6 py-6">
           <div className="flex items-center gap-4 mb-6">
             <Button 
               variant="outline" 
@@ -63,34 +280,12 @@ export function ReportViewer({ report, onBack }: ReportViewerProps) {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <div className="space-y-12">
-          {/* Charts Section */}
-          {report.charts.length > 0 && (
-            <section>
-              <h2 className="font-inter font-semibold text-2xl mb-6 text-foreground">
-                Datavisualisaties
-              </h2>
-              <div className="grid gap-8">
-                {report.charts.map((chart, index) => (
-                  <ChartViewer 
-                    key={chart.id} 
-                    chart={chart}
-                    className={index > 0 ? "mt-8" : ""}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Report Content */}
-          <section>
-            <div className="border-t pt-8">
-              <MarkdownRenderer content={report.content} />
-            </div>
-          </section>
-        </div>
+      {/* Scrollytelling Content */}
+      <div className="scrolly-article">
+        <Scrollytelling 
+          htmlContent={htmlContent}
+          onChartVisible={handleChartVisible}
+        />
       </div>
     </div>
   );

@@ -1,17 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Toaster } from '@/components/ui/sonner';
 import { Report } from '@/types';
 import { ReportCard } from './components/ReportCard';
 import { ReportViewer } from './components/ReportViewer';
 import { SearchBar } from './components/SearchBar';
-import { sampleReports } from './data/sampleReports';
+import { loadAllReports } from './data/reportLoader';
 import { FileText, ChartLine } from '@phosphor-icons/react';
 
 function App() {
-  const [reports] = useKV<Report[]>('reports', sampleReports);
-  const [filteredReports, setFilteredReports] = useState<Report[]>(reports);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [filteredReports, setFilteredReports] = useState<Report[]>([]);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    loadReports();
+  }, []);
+
+  const loadReports = async () => {
+    try {
+      const allReports = await loadAllReports();
+      setReports(allReports);
+      setFilteredReports(allReports);
+    } catch (error) {
+      console.error('Failed to load reports:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleReportSelect = (report: Report) => {
     setSelectedReport(report);
@@ -20,6 +37,25 @@ function App() {
   const handleBackToReports = () => {
     setSelectedReport(null);
   };
+
+  if (isLoading) {
+    return (
+      <>
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="text-center">
+            <div className="p-4 bg-primary text-primary-foreground rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center animate-pulse">
+              <ChartLine size={24} />
+            </div>
+            <h3 className="font-inter font-semibold text-lg mb-2">Rapporten laden...</h3>
+            <p className="text-muted-foreground">
+              Bezig met het laden van alle rapporten
+            </p>
+          </div>
+        </div>
+        <Toaster />
+      </>
+    );
+  }
 
   if (selectedReport) {
     return (

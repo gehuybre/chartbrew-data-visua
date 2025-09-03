@@ -1,0 +1,53 @@
+{
+  "id": "page-performance",
+  "type": "bar",
+  "title": "Best Presterende Pagina's (Paginaweergaven)",
+  "subtitle": "Homepage leidt met significante marge",
+  "description": "Vergelijking van paginaweergaven voor de vijf best presterende pagina's op onze website.",
+  "dataSource": "./page-performance.csv",
+  "xAxis": {
+    "field": "page",
+    "label": "Pagina",
+    "type": "category",
+    "rotation": -45
+  },
+  "yAxis": {
+    "field": "views",
+    "label": "Paginaweergaven",
+    "type": "linear",
+    "format": "#,###"
+  },
+  "colors": {
+    "palette": "default"
+  },
+  "bar": {
+    "borderRadius": 4,
+    "spacing": 0.1,
+    "orientation": "vertical"
+  },
+  "legend": {
+    "show": false
+  },
+  "grid": {
+    "show": true,
+    "color": "var(--border)",
+    "style": "dashed"
+  },
+  "tooltip": {
+    "show": true,
+    "format": "{page}: {views:#,###} weergaven"
+  },
+  "footer": {
+    "text": "Data van 1 juli - 30 september 2024",
+    "source": "Analytics Team",
+    "notes": [
+      "Homepage omvat alle root URL varianten",
+      "Blog telt individuele artikelpagina's"
+    ]
+  },
+  "animation": {
+    "duration": 1200,
+    "easing": "ease-out",
+    "delay": 100
+  }
+}

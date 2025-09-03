@@ -1,0 +1,54 @@
+{
+  "id": "monthly-visitors",
+  "type": "line",
+  "title": "Maandelijkse Unieke Bezoekers Q3 2024",
+  "subtitle": "Steady Growth in Website Traffic",
+  "description": "Dit diagram toont de gestage groei van unieke bezoekers gedurende het derde kwartaal van 2024.",
+  "dataSource": "./monthly-visitors.csv",
+  "xAxis": {
+    "field": "month",
+    "label": "Maand",
+    "type": "category"
+  },
+  "yAxis": {
+    "field": "visitors",
+    "label": "Unieke Bezoekers",
+    "type": "linear",
+    "format": "#,###",
+    "tickCount": 6
+  },
+  "colors": {
+    "palette": "default"
+  },
+  "lines": {
+    "style": "solid",
+    "width": 3,
+    "smooth": true,
+    "projection": {
+      "enabled": false
+    }
+  },
+  "legend": {
+    "show": false,
+    "position": "top"
+  },
+  "grid": {
+    "show": true,
+    "color": "var(--border)",
+    "style": "solid"
+  },
+  "tooltip": {
+    "show": true,
+    "format": "{month}: {visitors:#,###} bezoekers"
+  },
+  "footer": {
+    "text": "Data verzameld via Google Analytics",
+    "source": "Analytics Team",
+    "notes": ["Unieke bezoekers gedefinieerd als gebruikers met unieke cookie ID's"]
+  },
+  "animation": {
+    "duration": 1500,
+    "easing": "ease-out",
+    "delay": 200
+  }
+}

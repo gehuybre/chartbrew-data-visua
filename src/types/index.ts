@@ -1,14 +1,18 @@
+export { ChartConfig, colorPalettes } from './chartConfig';
+
 export interface ChartData {
   id: string;
-  type: 'bar' | 'line' | 'pie' | 'area';
-  title: string;
-  data: any[];
-  csvPath?: string; // Path to CSV file for this chart
-  config?: {
-    xAxis?: string;
-    yAxis?: string;
-    colors?: string[];
-  };
+  configPath: string; // Path to chart config JSON file
+  data?: any[]; // Optional pre-loaded data for demos
+}
+
+export interface ScrollySection {
+  id: string;
+  type: 'text' | 'chart' | 'text-chart' | 'chart-text';
+  content?: string; // HTML content
+  chartId?: string; // Reference to chart
+  animation?: 'fade' | 'slide' | 'scale';
+  trigger?: 'onEnter' | 'onScroll' | 'onExit';
 }
 
 export interface Report {
@@ -19,9 +23,10 @@ export interface Report {
   date: string;
   tags: string[];
   charts: ChartData[];
-  content: string; // Markdown content
+  content: string; // HTML content with scrollytelling
+  sections: ScrollySection[]; // Structured scrolly sections
   thumbnail?: string;
-  folderPath?: string; // Path to report folder containing CSV files and MD
+  folderPath: string; // Required path to report folder
 }
 
 export interface AppConfig {

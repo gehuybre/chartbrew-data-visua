@@ -1,0 +1,40 @@
+{
+  "id": "traffic-sources",
+  "type": "pie",
+  "title": "Verdeling Verkeersbronnen Q3 2024",
+  "subtitle": "Dominantie van Organisch Zoeken",
+  "description": "Deze taartgrafiek toont de verdeling van verkeersbronnen naar onze website gedurende Q3 2024.",
+  "dataSource": "./traffic-sources.csv",
+  "colors": {
+    "palette": "highlight",
+    "gradients": true
+  },
+  "pie": {
+    "innerRadius": 0.4,
+    "padAngle": 0.02,
+    "cornerRadius": 4,
+    "sortByValue": true
+  },
+  "legend": {
+    "show": true,
+    "position": "right",
+    "align": "center"
+  },
+  "tooltip": {
+    "show": true,
+    "format": "{source}: {percentage}% van totaal verkeer"
+  },
+  "footer": {
+    "text": "Gecategoriseerd volgens Google Analytics standaarden",
+    "source": "Analytics Team",
+    "notes": [
+      "Organisch zoeken omvat alle zoekmachine verkeer",
+      "Direct verkeer kan UTM-parameters missen"
+    ]
+  },
+  "animation": {
+    "duration": 2000,
+    "easing": "ease-in-out",
+    "delay": 400
+  }
+}
